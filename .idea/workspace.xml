@@ -2,9 +2,16 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6ab0e910-499d-4e35-994f-5289f2d928b8" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/dao/implementations/TopicDao.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/dao/implementations/UserDao.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/services/implementations/AnswerService.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/services/implementations/TopicService.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/models/Answer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/models/Answer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/models/Comment.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/models/Comment.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/models/Node.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/models/Node.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/models/Post.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/models/Post.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/models/Topic.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/models/Topic.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/models/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/models/User.class" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -81,9 +88,11 @@
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="PropertiesComponent">
     <property name="DatabaseDriversLRU" value="postgresql" />
+    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="project.structure.last.edited" value="SDKs" />
+    <property name="last_directory_selection" value="$PROJECT_DIR$/src/main/java/services" />
+    <property name="project.structure.last.edited" value="Modules" />
     <property name="project.structure.proportion" value="0.15" />
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
@@ -142,7 +151,7 @@
       <workItem from="1571821514292" duration="4328000" />
       <workItem from="1571856064756" duration="5606000" />
       <workItem from="1571929083801" duration="3403000" />
-      <workItem from="1572190150305" duration="1312000" />
+      <workItem from="1572190150305" duration="5043000" />
     </task>
     <servers />
   </component>
