@@ -2,21 +2,9 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6ab0e910-499d-4e35-994f-5289f2d928b8" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/main/java/dao/interfaces/AnswerDao.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/dao/interfaces/CommentDao.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/dao/interfaces/NodeDao.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/dao/interfaces/PostDao.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/dao/interfaces/TopicDao.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/main/java/dao/interfaces/UserDao.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dao/implementations/TopicDao.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/dao/implementations/UserDao.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/Answer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Answer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/Comment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Comment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/Node.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Node.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Post.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/Topic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/Topic.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/models/User.java" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -81,8 +69,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="Interface" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -153,7 +141,8 @@
       <workItem from="1571820560793" duration="832000" />
       <workItem from="1571821514292" duration="4328000" />
       <workItem from="1571856064756" duration="5606000" />
-      <workItem from="1571929083801" duration="1602000" />
+      <workItem from="1571929083801" duration="3403000" />
+      <workItem from="1572190150305" duration="1312000" />
     </task>
     <servers />
   </component>
