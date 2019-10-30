@@ -1,21 +1,30 @@
 package models;
 
 import lombok.*;
-import org.hibernate.type.descriptor.java.LocalDateTimeJavaDescriptor;
+import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.TypeDef;
+import org.hibernate.annotations.Parameter;
+import utils.QnaRole;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @ToString
 @Entity
-@Table(name = "user")
+@Table(name = "qna_user", schema = "qna")
 public class User {
 
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "id", updatable = false, nullable = false)
     @Getter
-    private UUID id;
+    private UUID userId;
 
     @Getter
     @Setter
@@ -40,9 +49,10 @@ public class User {
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
+    @Enumerated(EnumType.STRING)
     @Getter
     @Setter
-    private String role;
+    private QnaRole role;
 
     @Getter
     @Setter
@@ -55,7 +65,7 @@ public class User {
 
     @Getter
     @Setter
-    @ManyToMany(mappedBy = "node")
+    @ManyToMany(mappedBy = "users")
     private Set<Node> nodes = new HashSet<>();
 
     @Getter
@@ -66,6 +76,17 @@ public class User {
             joinColumns = { @JoinColumn(name = "user_id") },
             inverseJoinColumns = { @JoinColumn(name = "rated_post_id") }
     )
-    Set<Post> ratedPosts = new HashSet<>();
+    private Set<Post> ratedPosts = new HashSet<>();
+
+    public User(String fullName, String username, String passwordEncrypted,
+                String email, QnaRole role) {
+        this.fullName = fullName;
+        this.username = username;
+        this.passwordEncrypted = passwordEncrypted;
+        this.email = email;
+        this.createdAt = LocalDateTime.now();
+        this.role = role;
+        this.original = true;
+    }
 
 }

@@ -1,6 +1,7 @@
 package models;
 
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -8,20 +9,26 @@ import java.util.List;
 import java.util.UUID;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @ToString
 @Entity
-@Table(name = "comment")
+@Table(name = "comment", schema = "qna")
 public class Comment {
 
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "id", updatable = false, nullable = false)
     @Getter
-    private UUID id;
+    private UUID commentId;
 
-    @Getter
-    @Setter
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
-    private Post post;
+    @Getter
+    @Setter
+    private Post commentPost;
 
     @Getter
     @Setter

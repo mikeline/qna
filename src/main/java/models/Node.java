@@ -1,6 +1,7 @@
 package models;
 
 import lombok.*;
+import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.util.HashSet;
@@ -8,13 +9,20 @@ import java.util.Set;
 import java.util.UUID;
 
 @NoArgsConstructor
-@AllArgsConstructor
 @ToString
 @Entity
-@Table(name = "node")
+@Table(name = "node", schema = "qna")
 public class Node {
+
+    @Id
+    @GeneratedValue(generator = "UUID")
+    @GenericGenerator(
+            name = "UUID",
+            strategy = "org.hibernate.id.UUIDGenerator"
+    )
+    @Column(name = "id", updatable = false, nullable = false)
     @Getter
-    private UUID id;
+    private UUID nodeId;
 
     @Getter
     @Setter
@@ -44,10 +52,5 @@ public class Node {
             inverseJoinColumns = { @JoinColumn(name = "replicated_post_id") }
     )
     Set<Post> posts = new HashSet<>();
-
-    @Getter
-    @Setter
-    @ManyToMany(mappedBy = "node")
-    private Set<Node> nodes = new HashSet<>();
 
 }

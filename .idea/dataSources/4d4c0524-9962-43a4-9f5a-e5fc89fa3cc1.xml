@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<dataSource name="PostgreSQL - postgres@localhost">
+<dataSource name="hibernate.cfg.xml/Hibernate">
   <database-model serializer="dbm" dbms="POSTGRES" family-id="POSTGRES" format-version="4.16">
     <root id="1">
       <ServerVersion>12.0</ServerVersion>
@@ -8,7 +8,7 @@
       <ObjectId>13318</ObjectId>
       <Comment>default administrative connection database</Comment>
       <Owner>postgres</Owner>
-      <IntrospectionStateNumber>526</IntrospectionStateNumber>
+      <IntrospectionStateNumber>579</IntrospectionStateNumber>
       <Current>1</Current>
     </database>
     <role id="3" parent="1" name="pg_execute_server_program">
@@ -85,7 +85,7 @@
       <ObjectId>16393</ObjectId>
       <StateNumber>493</StateNumber>
       <Owner>postgres</Owner>
-      <IntrospectionStateNumber>527</IntrospectionStateNumber>
+      <IntrospectionStateNumber>580</IntrospectionStateNumber>
     </schema>
     <access-method id="16" parent="2" name="heap">
       <ObjectId>2</ObjectId>
@@ -186,17 +186,17 @@
     <table id="30" parent="15" name="post">
       <ObjectId>16411</ObjectId>
       <Owner>postgres</Owner>
-      <StateNumber>503</StateNumber>
+      <StateNumber>578</StateNumber>
     </table>
-    <table id="31" parent="15" name="topic">
+    <table id="31" parent="15" name="qna_user">
+      <ObjectId>16401</ObjectId>
+      <Owner>postgres</Owner>
+      <StateNumber>531</StateNumber>
+    </table>
+    <table id="32" parent="15" name="topic">
       <ObjectId>16424</ObjectId>
       <Owner>postgres</Owner>
       <StateNumber>506</StateNumber>
-    </table>
-    <table id="32" parent="15" name="user">
-      <ObjectId>16401</ObjectId>
-      <Owner>postgres</Owner>
-      <StateNumber>503</StateNumber>
     </table>
     <table id="33" parent="15" name="user_post_rating">
       <ObjectId>16476</ObjectId>
@@ -431,7 +431,7 @@
       <ColNames>replicated_user_id</ColNames>
       <RefTableId>16401</RefTableId>
       <RefColPositions>1</RefColPositions>
-      <RefTableName>user</RefTableName>
+      <RefTableName>qna_user</RefTableName>
       <RefKeyName>user_pk</RefKeyName>
       <RefColNames>id</RefColNames>
       <OnDelete>cascade</OnDelete>
@@ -492,68 +492,156 @@
       <StateNumber>503</StateNumber>
       <TypeId>23</TypeId>
     </column>
-    <index id="70" parent="30" name="post_pk">
+    <column id="70" parent="30" name="post_type">
+      <Position>9</Position>
+      <DataType>varchar|0s</DataType>
+      <StateNumber>578</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <index id="71" parent="30" name="post_pk">
       <ObjectId>16417</ObjectId>
       <StateNumber>503</StateNumber>
       <ColNames>id</ColNames>
       <Unique>1</Unique>
       <Primary>1</Primary>
     </index>
-    <key id="71" parent="30" name="post_pk">
+    <key id="72" parent="30" name="post_pk">
       <ObjectId>16418</ObjectId>
       <StateNumber>503</StateNumber>
       <ColNames>id</ColNames>
       <Primary>1</Primary>
       <UnderlyingIndexName>post_pk</UnderlyingIndexName>
     </key>
-    <foreign-key id="72" parent="30" name="post_user_id_fk">
+    <foreign-key id="73" parent="30" name="post_user_id_fk">
       <ObjectId>16419</ObjectId>
       <StateNumber>503</StateNumber>
       <ColNames>user_id</ColNames>
       <RefTableId>16401</RefTableId>
       <RefColPositions>1</RefColPositions>
-      <RefTableName>user</RefTableName>
+      <RefTableName>qna_user</RefTableName>
       <RefKeyName>user_pk</RefKeyName>
       <RefColNames>id</RefColNames>
       <OnDelete>cascade</OnDelete>
       <OnUpdate>cascade</OnUpdate>
     </foreign-key>
-    <column id="73" parent="31" name="id">
+    <column id="74" parent="31" name="id">
+      <Position>1</Position>
+      <DataType>uuid|0s</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>498</StateNumber>
+      <TypeId>2950</TypeId>
+    </column>
+    <column id="75" parent="31" name="full_name">
+      <Position>2</Position>
+      <DataType>varchar|0s</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>498</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="76" parent="31" name="username">
+      <Position>3</Position>
+      <DataType>varchar|0s</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>498</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="77" parent="31" name="password_encrypted">
+      <Position>4</Position>
+      <DataType>varchar|0s</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>498</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="78" parent="31" name="email">
+      <Position>5</Position>
+      <DataType>varchar|0s</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>498</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="79" parent="31" name="created_at">
+      <Position>6</Position>
+      <DataType>timestamp|0s</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>498</StateNumber>
+      <TypeId>1114</TypeId>
+    </column>
+    <column id="80" parent="31" name="role">
+      <Position>7</Position>
+      <DataType>varchar|0s</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>531</StateNumber>
+      <TypeId>1043</TypeId>
+    </column>
+    <column id="81" parent="31" name="original">
+      <Position>8</Position>
+      <DataType>boolean|0s</DataType>
+      <NotNull>1</NotNull>
+      <StateNumber>498</StateNumber>
+      <TypeId>16</TypeId>
+    </column>
+    <index id="82" parent="31" name="user_pk">
+      <ObjectId>16407</ObjectId>
+      <StateNumber>531</StateNumber>
+      <ColNames>id</ColNames>
+      <Unique>1</Unique>
+      <Primary>1</Primary>
+    </index>
+    <index id="83" parent="31" name="user_username_uindex">
+      <ObjectId>16410</ObjectId>
+      <StateNumber>531</StateNumber>
+      <ColNames>username</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <index id="84" parent="31" name="user_email_uindex">
+      <ObjectId>16409</ObjectId>
+      <StateNumber>531</StateNumber>
+      <ColNames>email</ColNames>
+      <Unique>1</Unique>
+    </index>
+    <key id="85" parent="31" name="user_pk">
+      <ObjectId>16408</ObjectId>
+      <StateNumber>498</StateNumber>
+      <ColNames>id</ColNames>
+      <Primary>1</Primary>
+      <UnderlyingIndexName>user_pk</UnderlyingIndexName>
+    </key>
+    <column id="86" parent="32" name="id">
       <Position>1</Position>
       <DataType>uuid|0s</DataType>
       <NotNull>1</NotNull>
       <StateNumber>506</StateNumber>
       <TypeId>2950</TypeId>
     </column>
-    <column id="74" parent="31" name="title">
+    <column id="87" parent="32" name="title">
       <Position>2</Position>
       <DataType>varchar|0s</DataType>
       <NotNull>1</NotNull>
       <StateNumber>506</StateNumber>
       <TypeId>1043</TypeId>
     </column>
-    <column id="75" parent="31" name="post_id">
+    <column id="88" parent="32" name="post_id">
       <Position>3</Position>
       <DataType>uuid|0s</DataType>
       <NotNull>1</NotNull>
       <StateNumber>506</StateNumber>
       <TypeId>2950</TypeId>
     </column>
-    <index id="76" parent="31" name="topic_pk">
+    <index id="89" parent="32" name="topic_pk">
       <ObjectId>16430</ObjectId>
       <StateNumber>506</StateNumber>
       <ColNames>id</ColNames>
       <Unique>1</Unique>
       <Primary>1</Primary>
     </index>
-    <key id="77" parent="31" name="topic_pk">
+    <key id="90" parent="32" name="topic_pk">
       <ObjectId>16431</ObjectId>
       <StateNumber>506</StateNumber>
       <ColNames>id</ColNames>
       <Primary>1</Primary>
       <UnderlyingIndexName>topic_pk</UnderlyingIndexName>
     </key>
-    <foreign-key id="78" parent="31" name="topic_post_id_fk">
+    <foreign-key id="91" parent="32" name="topic_post_id_fk">
       <ObjectId>16432</ObjectId>
       <StateNumber>506</StateNumber>
       <ColNames>post_id</ColNames>
@@ -565,122 +653,40 @@
       <OnDelete>cascade</OnDelete>
       <OnUpdate>cascade</OnUpdate>
     </foreign-key>
-    <column id="79" parent="32" name="id">
-      <Position>1</Position>
-      <DataType>uuid|0s</DataType>
-      <NotNull>1</NotNull>
-      <StateNumber>498</StateNumber>
-      <TypeId>2950</TypeId>
-    </column>
-    <column id="80" parent="32" name="full_name">
-      <Position>2</Position>
-      <DataType>varchar|0s</DataType>
-      <NotNull>1</NotNull>
-      <StateNumber>498</StateNumber>
-      <TypeId>1043</TypeId>
-    </column>
-    <column id="81" parent="32" name="username">
-      <Position>3</Position>
-      <DataType>varchar|0s</DataType>
-      <NotNull>1</NotNull>
-      <StateNumber>498</StateNumber>
-      <TypeId>1043</TypeId>
-    </column>
-    <column id="82" parent="32" name="password_encrypted">
-      <Position>4</Position>
-      <DataType>varchar|0s</DataType>
-      <NotNull>1</NotNull>
-      <StateNumber>498</StateNumber>
-      <TypeId>1043</TypeId>
-    </column>
-    <column id="83" parent="32" name="email">
-      <Position>5</Position>
-      <DataType>varchar|0s</DataType>
-      <NotNull>1</NotNull>
-      <StateNumber>498</StateNumber>
-      <TypeId>1043</TypeId>
-    </column>
-    <column id="84" parent="32" name="created_at">
-      <Position>6</Position>
-      <DataType>timestamp|0s</DataType>
-      <NotNull>1</NotNull>
-      <StateNumber>498</StateNumber>
-      <TypeId>1114</TypeId>
-    </column>
-    <column id="85" parent="32" name="role">
-      <Position>7</Position>
-      <DataType>qna_role|0s</DataType>
-      <NotNull>1</NotNull>
-      <StateNumber>498</StateNumber>
-      <TypeId>16395</TypeId>
-    </column>
-    <column id="86" parent="32" name="original">
-      <Position>8</Position>
-      <DataType>boolean|0s</DataType>
-      <NotNull>1</NotNull>
-      <StateNumber>498</StateNumber>
-      <TypeId>16</TypeId>
-    </column>
-    <index id="87" parent="32" name="user_pk">
-      <ObjectId>16407</ObjectId>
-      <StateNumber>498</StateNumber>
-      <ColNames>id</ColNames>
-      <Unique>1</Unique>
-      <Primary>1</Primary>
-    </index>
-    <index id="88" parent="32" name="user_username_uindex">
-      <ObjectId>16410</ObjectId>
-      <StateNumber>500</StateNumber>
-      <ColNames>username</ColNames>
-      <Unique>1</Unique>
-    </index>
-    <index id="89" parent="32" name="user_email_uindex">
-      <ObjectId>16409</ObjectId>
-      <StateNumber>499</StateNumber>
-      <ColNames>email</ColNames>
-      <Unique>1</Unique>
-    </index>
-    <key id="90" parent="32" name="user_pk">
-      <ObjectId>16408</ObjectId>
-      <StateNumber>498</StateNumber>
-      <ColNames>id</ColNames>
-      <Primary>1</Primary>
-      <UnderlyingIndexName>user_pk</UnderlyingIndexName>
-    </key>
-    <column id="91" parent="33" name="user_id">
+    <column id="92" parent="33" name="user_id">
       <Position>1</Position>
       <DataType>uuid|0s</DataType>
       <NotNull>1</NotNull>
       <StateNumber>519</StateNumber>
       <TypeId>2950</TypeId>
     </column>
-    <column id="92" parent="33" name="rated_post_id">
+    <column id="93" parent="33" name="rated_post_id">
       <Position>2</Position>
       <DataType>uuid|0s</DataType>
       <NotNull>1</NotNull>
       <StateNumber>519</StateNumber>
       <TypeId>2950</TypeId>
     </column>
-    <column id="93" parent="33" name="value">
+    <column id="94" parent="33" name="value">
       <Position>3</Position>
       <DataType>integer|0s</DataType>
       <NotNull>1</NotNull>
       <StateNumber>519</StateNumber>
       <TypeId>23</TypeId>
     </column>
-    <foreign-key id="94" parent="33" name="user_post_rating_user_id_fk">
+    <foreign-key id="95" parent="33" name="user_post_rating_user_id_fk">
       <ObjectId>16479</ObjectId>
       <StateNumber>519</StateNumber>
       <ColNames>user_id</ColNames>
       <RefTableId>16401</RefTableId>
       <RefColPositions>1</RefColPositions>
-      <RefTableName>user</RefTableName>
+      <RefTableName>qna_user</RefTableName>
       <RefKeyName>user_pk</RefKeyName>
       <RefColNames>id</RefColNames>
       <OnDelete>cascade</OnDelete>
       <OnUpdate>cascade</OnUpdate>
     </foreign-key>
-    <foreign-key id="95" parent="33" name="user_post_rating_post_id_fk">
+    <foreign-key id="96" parent="33" name="user_post_rating_post_id_fk">
       <ObjectId>16484</ObjectId>
       <StateNumber>519</StateNumber>
       <ColNames>rated_post_id</ColNames>

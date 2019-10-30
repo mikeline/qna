@@ -1,6 +1,7 @@
 package dao.implementations;
 
 import dao.interfaces.Dao;
+import models.Post;
 import models.Topic;
 import org.hibernate.Session;
 import org.hibernate.Transaction;
