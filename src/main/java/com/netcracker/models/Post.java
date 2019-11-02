@@ -1,5 +1,7 @@
 package com.netcracker.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import com.netcracker.utils.PostType;
@@ -8,6 +10,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @NoArgsConstructor
 @ToString
 @Entity
@@ -53,8 +56,7 @@ public class Post {
     @Setter
     private boolean original;
 
-
-
+    @JsonIgnore
     @Getter
     @Setter
     @ManyToOne(fetch = FetchType.LAZY)

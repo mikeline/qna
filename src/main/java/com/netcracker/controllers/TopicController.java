@@ -3,6 +3,7 @@ package com.netcracker.controllers;
 
 import com.netcracker.models.Topic;
 import com.netcracker.services.repo.TopicRepo;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -16,14 +17,14 @@ import static org.springframework.http.HttpStatus.*;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
+@RequiredArgsConstructor
 @SuppressWarnings("unused")
 @RestController
 @RequestMapping("/topic")
 public class TopicController {
     private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
-    @Resource
-    private TopicRepo topicRepo;
+    private final TopicRepo topicRepo;
 
     @RequestMapping(value = "/{id}", method = GET)
     @ResponseBody

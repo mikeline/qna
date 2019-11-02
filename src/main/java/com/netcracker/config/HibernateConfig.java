@@ -19,7 +19,7 @@ import java.util.Properties;
 @Configuration
 @EnableTransactionManagement
 @ComponentScan(basePackages = {"com.netcracker"})
-@EnableJpaRepositories(basePackages = {"com.netcracker.service.repo"})
+@EnableJpaRepositories(basePackages = {"com.netcracker.services.repo"})
 public class HibernateConfig {
 
     @Bean

@@ -2,6 +2,7 @@ package com.netcracker.controllers;
 
 import com.netcracker.models.Answer;
 import com.netcracker.services.repo.AnswerRepo;
+import lombok.RequiredArgsConstructor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
@@ -15,14 +16,14 @@ import static org.springframework.http.HttpStatus.*;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
+@RequiredArgsConstructor
 @SuppressWarnings("unused")
 @RestController
 @RequestMapping("/answer")
 public class AnswerController {
     private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
-    @Resource
-    private AnswerRepo answerRepo;
+    private final AnswerRepo answerRepo;
 
     @RequestMapping(value = "/{id}", method = GET)
     @ResponseBody

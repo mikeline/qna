@@ -1,5 +1,8 @@
 package com.netcracker.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import com.netcracker.utils.QnaRole;
@@ -8,6 +11,8 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
+import static com.fasterxml.jackson.annotation.JsonInclude.*;
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @NoArgsConstructor
 @ToString
 @Entity
@@ -56,6 +61,7 @@ public class User {
     @Setter
     private boolean original;
 
+    @JsonIgnore
     @Getter
     @Setter
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
