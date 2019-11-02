@@ -1,4 +1,4 @@
-package com.netcracker.service.repo;
+package com.netcracker.services.repo;
 
 import com.netcracker.models.Comment;
 import org.springframework.data.jpa.repository.JpaRepository;

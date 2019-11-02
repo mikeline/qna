@@ -2,62 +2,33 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="6ab0e910-499d-4e35-994f-5289f2d928b8" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/controllers/AnswerController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/controllers/CommentController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/controllers/NodeController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/controllers/PostController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/controllers/TopicController.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/controllers/UserController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dao/implementations/AnswerDao.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dao/implementations/CommentDao.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dao/implementations/NodeDao.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dao/implementations/PostDao.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dao/implementations/TopicDao.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dao/implementations/UserDao.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/dao/interfaces/Dao.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/main/Main.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/Answer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/models/Answer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/Comment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/models/Comment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/Node.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/models/Node.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/models/Post.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/Topic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/models/Topic.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/models/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/models/User.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/services/implementations/AnswerService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/services/implementations/CommentService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/services/implementations/NodeService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/services/implementations/PostService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/services/implementations/TopicService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/services/implementations/UserService.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/services/interfaces/Service.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/HibernateSessionFactoryUtil.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/PostType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/utils/PostType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/QnaRole.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/utils/QnaRole.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/utils/SecurityUtil.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/utils/SecurityUtil.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/resources/hibernate.cfg.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dao/implementations/AnswerDao.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dao/implementations/CommentDao.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dao/implementations/NodeDao.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dao/implementations/PostDao.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dao/implementations/TopicDao.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dao/implementations/UserDao.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/dao/interfaces/Dao.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/hibernate.cfg.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/main/Main.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/models/Answer.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/models/Comment.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/models/Node.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/models/Post.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/models/Topic.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/models/User.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/services/implementations/AnswerService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/services/implementations/CommentService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/services/implementations/NodeService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/services/implementations/PostService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/services/implementations/TopicService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/services/implementations/UserService.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/services/interfaces/Service.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/HibernateSessionFactoryUtil.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/PostType.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/QnaRole.class" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/target/classes/utils/SecurityUtil.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/netcracker/application/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/Application.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/netcracker/scenario/Stage1.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/netcracker/service/repo/AnswerRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/services/repo/AnswerRepo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/netcracker/service/repo/CommentRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/services/repo/CommentRepo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/netcracker/service/repo/NodeRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/services/repo/NodeRepo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/netcracker/service/repo/PostRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/services/repo/PostRepo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/netcracker/service/repo/TopicRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/services/repo/TopicRepo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/netcracker/service/repo/UserRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/services/repo/UserRepo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/resources/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/resources/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/application.yml" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/application.yml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/application/Application.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/config/HibernateConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/netcracker/config/HibernateConfig.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/scenario/Stage1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/service/repo/AnswerRepo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/service/repo/CommentRepo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/service/repo/NodeRepo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/service/repo/PostRepo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/service/repo/TopicRepo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/service/repo/UserRepo.class" beforeDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -146,6 +117,11 @@
     <property name="project.structure.side.proportion" value="0.2" />
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
+  <component name="RecentsManager">
+    <key name="MoveClassesOrPackagesDialog.RECENTS_KEY">
+      <recent name="com.netcracker" />
+    </key>
+  </component>
   <component name="RunDashboard">
     <option name="ruleStates">
       <list>
@@ -174,7 +150,7 @@
     </configuration>
     <configuration name="Application" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
       <module name="qnaHibernateApp" />
-      <option name="SPRING_BOOT_MAIN_CLASS" value="com.netcracker.application.Application" />
+      <option name="SPRING_BOOT_MAIN_CLASS" value="com.netcracker.Application" />
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
@@ -219,7 +195,9 @@
       <workItem from="1572434791230" duration="2441000" />
       <workItem from="1572438446082" duration="689000" />
       <workItem from="1572532465663" duration="3699000" />
-      <workItem from="1572537268042" duration="1213000" />
+      <workItem from="1572537268042" duration="1566000" />
+      <workItem from="1572625670344" duration="2660000" />
+      <workItem from="1572695568103" duration="7652000" />
     </task>
     <servers />
   </component>
