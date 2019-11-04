@@ -8,7 +8,7 @@
       <ObjectId>13318</ObjectId>
       <Comment>default administrative connection database</Comment>
       <Owner>postgres</Owner>
-      <IntrospectionStateNumber>610</IntrospectionStateNumber>
+      <IntrospectionStateNumber>617</IntrospectionStateNumber>
       <Current>1</Current>
     </database>
     <role id="3" parent="1" name="pg_execute_server_program">
@@ -85,7 +85,7 @@
       <ObjectId>16393</ObjectId>
       <StateNumber>493</StateNumber>
       <Owner>postgres</Owner>
-      <IntrospectionStateNumber>611</IntrospectionStateNumber>
+      <IntrospectionStateNumber>618</IntrospectionStateNumber>
     </schema>
     <access-method id="16" parent="2" name="heap">
       <ObjectId>2</ObjectId>
@@ -522,8 +522,7 @@
     <column id="72" parent="30" name="user_id">
       <Position>7</Position>
       <DataType>uuid|0s</DataType>
-      <NotNull>1</NotNull>
-      <StateNumber>503</StateNumber>
+      <StateNumber>616</StateNumber>
       <TypeId>2950</TypeId>
     </column>
     <column id="73" parent="30" name="post_type">

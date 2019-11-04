@@ -1,5 +1,6 @@
 package com.netcracker.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
@@ -35,6 +36,7 @@ public class Node {
     @Column(name = "authority_token")
     private String authorityToken;
 
+    @JsonIgnore
     @Getter
     @Setter
     @ManyToMany(cascade = { CascadeType.ALL })
@@ -45,6 +47,7 @@ public class Node {
     )
     Set<User> users = new HashSet<>();
 
+    @JsonIgnore
     @Getter
     @Setter
     @ManyToMany(cascade = { CascadeType.ALL })
