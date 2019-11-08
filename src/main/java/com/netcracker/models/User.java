@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import com.netcracker.utils.QnaRole;
 
@@ -47,6 +48,7 @@ public class User {
     @Setter
     private String email;
 
+    @CreationTimestamp
     @Getter
     @Setter
     @Column(name = "created_at")
@@ -65,7 +67,7 @@ public class User {
     @Getter
     @Setter
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Post> owningPosts = new ArrayList<>();;
+    private List<Post> owningPosts = new ArrayList<>();
 
     @Getter
     @Setter

@@ -1,7 +1,14 @@
 package com.netcracker.utils;
 
-public enum QnaRole {
+import org.springframework.security.core.GrantedAuthority;
+
+public enum QnaRole implements GrantedAuthority {
     ordinary,
     moderator,
-    administrator
+    administrator;
+
+    @Override
+    public String getAuthority() {
+        return name();
+    }
 }

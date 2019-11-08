@@ -65,7 +65,7 @@ public class HibernateConfig {
 
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL9Dialect");
 
-        properties.setProperty("hibernate.default_schema", "public");
+        properties.setProperty("hibernate.default_schema", "qna");
 
         properties.setProperty("hibernate.hbm2ddl.auto", "update");
 
@@ -74,6 +74,8 @@ public class HibernateConfig {
 
         // See https://hibernate.atlassian.net/browse/HHH-12368
         properties.setProperty("hibernate.jdbc.lob.non_contextual_creation", "true");
+
+        properties.setProperty("hibernate.temp.use_jdbc_metadata_defaults", "false");
 
         return properties;
     }
