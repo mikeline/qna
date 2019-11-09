@@ -1,25 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6ab0e910-499d-4e35-994f-5289f2d928b8" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/4d4c0524-9962-43a4-9f5a-e5fc89fa3cc1.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/4d4c0524-9962-43a4-9f5a-e5fc89fa3cc1.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources/4d4c0524-9962-43a4-9f5a-e5fc89fa3cc1/storage_v2/_src_/database/postgres.edMnLQ/schema/qna.5LUBAA.meta" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/4d4c0524-9962-43a4-9f5a-e5fc89fa3cc1/storage_v2/_src_/database/postgres.edMnLQ/schema/qna.5LUBAA.meta" afterDir="false" />
+    <list default="true" id="6ab0e910-499d-4e35-994f-5289f2d928b8" name="Default Changelist" comment="fixed authorization">
+      <change afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/netcracker/Application.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/Application.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/netcracker/config/HibernateConfig.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/config/HibernateConfig.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/netcracker/controllers/AnswerController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/controllers/AnswerController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/netcracker/controllers/CommentController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/controllers/CommentController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/netcracker/controllers/NodeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/controllers/NodeController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/netcracker/controllers/PostController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/controllers/PostController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/netcracker/controllers/TopicController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/controllers/TopicController.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/com/netcracker/controllers/UserController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/controllers/UserController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/netcracker/models/Answer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/models/Answer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/netcracker/models/Comment.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/models/Comment.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/netcracker/models/Node.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/models/Node.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/netcracker/models/Post.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/models/Post.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/netcracker/models/Topic.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/models/Topic.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/com/netcracker/models/User.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/models/User.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/netcracker/exception/CustomException.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/exception/CustomException.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/netcracker/security/JwtTokenProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/security/JwtTokenProvider.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/netcracker/security/MyUserDetails.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/security/MyUserDetails.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/netcracker/services/repo/UserRepo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/services/repo/UserRepo.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/netcracker/services/service/UserService.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/services/service/UserService.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/com/netcracker/utils/QnaRole.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/com/netcracker/utils/QnaRole.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/Application.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/netcracker/Application.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/config/HibernateConfig.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/netcracker/config/HibernateConfig.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/controllers/AnswerController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/netcracker/controllers/AnswerController.class" afterDir="false" />
@@ -28,12 +21,32 @@
       <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/controllers/PostController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/netcracker/controllers/PostController.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/controllers/TopicController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/netcracker/controllers/TopicController.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/controllers/UserController.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/netcracker/controllers/UserController.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/models/Answer.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/netcracker/models/Answer.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/models/Comment.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/netcracker/models/Comment.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/models/Node.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/netcracker/models/Node.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/models/Post.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/netcracker/models/Post.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/models/Topic.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/netcracker/models/Topic.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/models/User.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/netcracker/models/User.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/services/repo/AnswerRepo.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/netcracker/services/repo/AnswerRepo.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/services/repo/CommentRepo.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/netcracker/services/repo/CommentRepo.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/services/repo/NodeRepo.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/netcracker/services/repo/NodeRepo.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/services/repo/PostRepo.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/netcracker/services/repo/PostRepo.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/services/repo/TopicRepo.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/netcracker/services/repo/TopicRepo.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/services/repo/UserRepo.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/netcracker/services/repo/UserRepo.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/utils/PostType.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/netcracker/utils/PostType.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/utils/QnaRole.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/netcracker/utils/QnaRole.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/classes/com/netcracker/utils/SecurityUtil.class" beforeDir="false" afterPath="$PROJECT_DIR$/target/classes/com/netcracker/utils/SecurityUtil.class" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="ComposerSettings">
+    <execution>
+      <executable />
+    </execution>
   </component>
   <component name="DatabaseView">
     <option name="SHOW_INTERMEDIATE" value="true" />
@@ -76,15 +89,6 @@
         <item name="postgres: database" type="162271b6:PgImplModel$Database" />
         <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
         <item name="qna: schema" type="983ebcf7:PgImplModel$Schema" />
-      </path>
-      <path>
-        <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
-        <item name="hibernate.cfg.xml/Hibernate" type="feb32156:DbDataSourceImpl" />
-        <item name="databases" type="d4e8921:DatabaseStructure$FamilyGroup" />
-        <item name="postgres: database" type="162271b6:PgImplModel$Database" />
-        <item name="schemas" type="d4e8921:DatabaseStructure$FamilyGroup" />
-        <item name="qna: schema" type="983ebcf7:PgImplModel$Schema" />
-        <item name="post: table" type="69fad909:PgImplModel$LocalTable" />
       </path>
       <path>
         <item name="Database" type="3277223f:DatabaseStructure$DbRootGroup" />
@@ -185,7 +189,12 @@
           <expand>
             <path>
               <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
-              <item name="com.intellij.execution.services.ServiceModel$ServiceGroupNode@c7f8a6ac" type="7427dc5b:ServiceModel$ServiceGroupNode" />
+              <item name="com.intellij.execution.services.ServiceModel$ServiceGroupNode@c284efa3" type="7427dc5b:ServiceModel$ServiceGroupNode" />
+            </path>
+            <path>
+              <item name="services root" type="e789fda9:ObjectUtils$Sentinel" />
+              <item name="com.intellij.execution.services.ServiceModel$ServiceGroupNode@c284efa3" type="7427dc5b:ServiceModel$ServiceGroupNode" />
+              <item name="com.intellij.execution.services.ServiceModel$ServiceNode@36776ef1" type="9fbbdea:ServiceModel$ServiceNode" />
             </path>
           </expand>
           <select />
@@ -220,7 +229,17 @@
       <workItem from="1572537268042" duration="1566000" />
       <workItem from="1572625670344" duration="2660000" />
       <workItem from="1572695568103" duration="16323000" />
+      <workItem from="1573209723233" duration="22290000" />
+      <workItem from="1573296669568" duration="15228000" />
     </task>
+    <task id="LOCAL-00001" summary="fixed authorization">
+      <created>1573213892021</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1573213892021</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -238,5 +257,20 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="fixed authorization" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed authorization" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>jar://$MAVEN_REPOSITORY$/org/springframework/security/spring-security-core/5.2.0.RELEASE/spring-security-core-5.2.0.RELEASE.jar!/org/springframework/security/access/expression/SecurityExpressionRoot.class</url>
+          <line>50</line>
+          <option name="timeStamp" value="5" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
   </component>
 </project>

@@ -42,42 +42,50 @@ public class UserService {
     private final AuthenticationManager authenticationManager;
 
     public User getUserById(UUID id) {
+        LOG.info("getUSerById");
         return userRepo.getOne(id);
     }
 
     public List<User> getAllUsers() {
+        LOG.info("getAllUsers");
         return userRepo.findAll();
     }
 
     public User createUser(User user) {
+        LOG.info("createUser");
         return userRepo.save(user);
     }
 
     public User updateUser(User user) {
+        LOG.info("updateUser");
         return userRepo.save(user);
     }
 
     public void deleteUserById(UUID id) {
+        LOG.info("deleteUserById");
         userRepo.deleteById(id);
     }
 
-    public String signin(String username, String password) {
+    public String signin(String username, String password){
+        LOG.info("signin");
         try {
             List<QnaRole> roles = new ArrayList<>();
             User user = userRepo.findByUsername(username);
             roles.add(user.getRole());
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password));
+            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password, roles));
             return jwtTokenProvider.createToken(username, roles);
         } catch (AuthenticationException e) {
-            throw new CustomException("Invalid username/password supplied", HttpStatus.UNPROCESSABLE_ENTITY);
+            e.printStackTrace();
+            return null;
         }
     }
 
     public String signup(User user) {
+        LOG.info("signup");
         if (!userRepo.existsByUsername(user.getUsername())) {
             user.setPasswordEncrypted(passwordEncoder.encode(user.getPasswordEncrypted()));
             userRepo.save(user);
-            List<QnaRole> roles = new ArrayList<QnaRole>();
+            List<QnaRole> roles = new ArrayList<>();
             roles.add(user.getRole());
             return jwtTokenProvider.createToken(user.getUsername(), roles);
         } else {
@@ -86,10 +94,12 @@ public class UserService {
     }
 
     public void delete(String username) {
+        LOG.info("delete");
         userRepo.deleteByUsername(username);
     }
 
     public User search(String username) {
+        LOG.info("search");
         User user = userRepo.findByUsername(username);
         if (user == null) {
             throw new CustomException("The user doesn't exist", HttpStatus.NOT_FOUND);
@@ -98,11 +108,15 @@ public class UserService {
     }
 
     public User whoAmI(HttpServletRequest req) {
-        return userRepo.findByUsername(jwtTokenProvider.getUsername(jwtTokenProvider.resolveToken(req)));
+        LOG.info("whoAmI");
+        String username = jwtTokenProvider.getUsername(jwtTokenProvider.resolveToken(req));
+        LOG.info(username);
+        return userRepo.findByUsername(username);
     }
 
     public String refresh(String username) {
-        List<QnaRole> roles = new ArrayList<QnaRole>();
+        LOG.info("refresh");
+        List<QnaRole> roles = new ArrayList<>();
         roles.add(userRepo.findByUsername(username).getRole());
         return jwtTokenProvider.createToken(username, roles);
     }

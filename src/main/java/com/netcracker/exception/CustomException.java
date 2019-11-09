@@ -8,19 +8,29 @@ public class CustomException extends RuntimeException {
 
     private final String message;
     private final HttpStatus httpStatus;
+    private final String stackTraceString;
 
     public CustomException(String message, HttpStatus httpStatus) {
         this.message = message;
         this.httpStatus = httpStatus;
+        this.stackTraceString = "Not Set";
+    }
+
+    public CustomException(String message, HttpStatus httpStatus, String stackTraceString) {
+        this.message = message;
+        this.httpStatus = httpStatus;
+        this.stackTraceString = stackTraceString;
     }
 
     @Override
     public String getMessage() {
-        return message;
+        return stackTraceString;
     }
 
     public HttpStatus getHttpStatus() {
         return httpStatus;
     }
+
+    public String getStackTraceString() {return stackTraceString; }
 
 }

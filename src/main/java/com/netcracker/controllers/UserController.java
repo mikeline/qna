@@ -31,43 +31,43 @@ public class UserController {
 
     private final UserService userService;
 
-    @RequestMapping(value = "/{id}", method = GET)
-    @ResponseBody
-    public ResponseEntity<User> get(@PathVariable("id") String id) {
-        LOG.info("get request is received [id={}]", id);
+//    @RequestMapping(value = "/{id}", method = GET)
+//    @ResponseBody
+//    public ResponseEntity<User> get(@PathVariable("id") String id) {
+//        LOG.info("get request is received [id={}]", id);
+//
+//        User res = userService.getUserById(UUID.fromString(id));
+//
+//        return res == null ? new ResponseEntity<>(NOT_FOUND) : new ResponseEntity<>(res, OK);
+//    }
+//
+//    @RequestMapping(value = "/", method = GET)
+//    @ResponseBody
+//    public ResponseEntity<Collection<User>> getAll() {
+//        LOG.info("getAll request is received.");
+//
+//        return new ResponseEntity<>(userService.getAllUsers(), OK);
+//    }
+//
+//    @RequestMapping(method = POST)
+//    @ResponseBody
+//    public ResponseEntity<User> create(@RequestBody User user) {
+//        LOG.info("create request is received [user={}]", user);
+//
+//        User res = userService.createUser(user);
+//
+//        return new ResponseEntity<>(res, CREATED);
+//    }
 
-        User res = userService.getUserById(UUID.fromString(id));
-
-        return res == null ? new ResponseEntity<>(NOT_FOUND) : new ResponseEntity<>(res, OK);
-    }
-
-    @RequestMapping(value = "/", method = GET)
-    @ResponseBody
-    public ResponseEntity<Collection<User>> getAll() {
-        LOG.info("getAll request is received.");
-
-        return new ResponseEntity<>(userService.getAllUsers(), OK);
-    }
-
-    @RequestMapping(method = POST)
-    @ResponseBody
-    public ResponseEntity<User> create(@RequestBody User user) {
-        LOG.info("create request is received [book={}]", user);
-
-        User res = userService.createUser(user);
-
-        return new ResponseEntity<>(res, CREATED);
-    }
-
-    @RequestMapping(value = "/{id}", method = DELETE)
-    @ResponseBody
-    public ResponseEntity delete(@PathVariable("id") String id) {
-        LOG.info("delete request is received [id={}]", id);
-
-        userService.deleteUserById(UUID.fromString(id));
-
-        return new ResponseEntity(NO_CONTENT);
-    }
+//    @RequestMapping(value = "/{id}", method = DELETE)
+//    @ResponseBody
+//    public ResponseEntity delete(@PathVariable("id") String id) {
+//        LOG.info("delete request is received [id={}]", id);
+//
+//        userService.deleteUserById(UUID.fromString(id));
+//
+//        return new ResponseEntity(NO_CONTENT);
+//    }
 
     @RequestMapping(method = PUT)
     @ResponseBody
@@ -102,7 +102,7 @@ public class UserController {
     }
 
     @DeleteMapping(value = "/{username}")
-    @PreAuthorize("hasRole('administrator')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ApiOperation(value = "${UserController.delete}")
     @ApiResponses(value = {//
             @ApiResponse(code = 400, message = "Something went wrong"), //
@@ -115,7 +115,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/{username}")
-    @PreAuthorize("hasRole('administrator')")
+    @PreAuthorize("hasRole('ROLE_ADMIN')")
     @ApiOperation(value = "${UserController.search}", response = User.class)
     @ApiResponses(value = {//
             @ApiResponse(code = 400, message = "Something went wrong"), //
@@ -127,7 +127,7 @@ public class UserController {
     }
 
     @GetMapping(value = "/me")
-    @PreAuthorize("hasRole('administrator') or hasRole('moderator') or hasRole('ordinary')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODER') or hasRole('ROLE_CLIENT')")
     @ApiOperation(value = "${UserController.me}", response = User.class)
     @ApiResponses(value = {//
             @ApiResponse(code = 400, message = "Something went wrong"), //
@@ -138,7 +138,7 @@ public class UserController {
     }
 
     @GetMapping("/refresh")
-    @PreAuthorize("hasRole('administrator') or hasRole('moderator') or hasRole('ordinary')")
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODER') or hasRole('ROLE_CLIENT')")
     public String refresh(HttpServletRequest req) {
         return userService.refresh(req.getRemoteUser());
     }
