@@ -1,10 +1,12 @@
 package com.netcracker.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.netcracker.utils.NodeRole;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -13,6 +15,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @ToString
 @Entity
+@Data
 @Table(name = "node", schema = "qna")
 public class Node {
 
@@ -54,5 +57,12 @@ public class Node {
             inverseJoinColumns = { @JoinColumn(name = "replicated_post_id") }
     )
     Set<Post> posts = new HashSet<>();
+
+    @JsonIgnore
+    @Enumerated(EnumType.STRING)
+    private NodeRole nodeRole;
+
+    @JsonIgnore
+    private LocalDateTime lastSeen;
 
 }

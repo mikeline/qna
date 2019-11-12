@@ -1,4 +1,5 @@
 package com.netcracker.config;
+import com.netcracker.interserver.RabbitConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -20,6 +21,7 @@ import java.util.Properties;
 @EnableTransactionManagement
 @ComponentScan(basePackages = {"com.netcracker"})
 @EnableJpaRepositories(basePackages = {"com.netcracker.services.repo"})
+@Import({ WebSecurityConfig.class })
 public class HibernateConfig {
 
     @Bean
