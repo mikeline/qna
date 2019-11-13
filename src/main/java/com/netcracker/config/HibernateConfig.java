@@ -1,7 +1,10 @@
 package com.netcracker.config;
+import com.netcracker.interserver.RabbitConfiguration;
+import com.netcracker.security.WebSecurityConfig;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
@@ -20,6 +23,7 @@ import java.util.Properties;
 @EnableTransactionManagement
 @ComponentScan(basePackages = {"com.netcracker"})
 @EnableJpaRepositories(basePackages = {"com.netcracker.services.repo"})
+@Import({ WebSecurityConfig.class })
 public class HibernateConfig {
 
     @Bean
