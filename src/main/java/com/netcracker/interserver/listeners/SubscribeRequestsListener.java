@@ -27,21 +27,15 @@ public class SubscribeRequestsListener {
     private final RabbitTemplate rabbitTemplate;
 
     @RabbitHandler
-    public void subscriberRequestHandler(@Payload SubscribeRequestMessage message, @Header("sender") String senderUUID, Message<?> msg) {
+    public void subscribeRequestHandler(@Payload SubscribeRequestMessage message, @Header("sender") String senderUUID, Message msg) {
         log.info(msg);
         if (thisNode.getUUID().toString().equals(senderUUID) || thisNode.getSubscribers().size() >= 3) {
             return;
         }
+        // todo: if (senderUUID != message.getServerID()) ???
 
-        UUID senderID;
-        try{
-            senderID = UUID.fromString(senderUUID);
-        } catch (IllegalArgumentException e) {
-            log.info(e);
-            return;
-        }
 
-        thisNode.addSubscriber(senderID);
+        thisNode.addSubscriber(message.getSubscriberNode());
 
         // send directly to subscriber
         rabbitTemplate.convertAndSend(
@@ -52,17 +46,10 @@ public class SubscribeRequestsListener {
     }
 
     @RabbitHandler
-    public void unsubscribeRequestHandler(@Payload UnsubscribeRequestMessage message, @Header("sender") String senderUUID, Message<?> msg) {
+    public void unsubscribeRequestHandler(@Payload UnsubscribeRequestMessage message, @Header("sender") String senderUUID, Message msg) {
         log.info(msg);
-        UUID senderID;
-        try{
-            senderID = UUID.fromString(senderUUID);
-        } catch (IllegalArgumentException e) {
-            log.info(e);
-            return;
-        }
 
-        thisNode.removeSubscriber(senderID);
+        thisNode.removeSubscriber(senderUUID);
     }
 
 

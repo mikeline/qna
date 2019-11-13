@@ -1,5 +1,7 @@
 package com.netcracker.interserver;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -10,6 +12,7 @@ import org.springframework.amqp.support.converter.Jackson2JavaTypeMapper;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.event.EventListener;
 
 @Configuration
@@ -48,8 +51,15 @@ public class RabbitConfiguration {
     }
 
     @Bean
+    public ObjectMapper objectMapper() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+        return objectMapper;
+    }
+
+    @Bean
     public Jackson2JsonMessageConverter jsonMessageConverter() {
-        Jackson2JsonMessageConverter jsonConverter = new Jackson2JsonMessageConverter();
+        Jackson2JsonMessageConverter jsonConverter = new Jackson2JsonMessageConverter(objectMapper());
         DefaultClassMapper classMapper = new DefaultClassMapper();
         classMapper.setTrustedPackages("*"); // todo: security?
         jsonConverter.setClassMapper(classMapper);
@@ -71,6 +81,7 @@ public class RabbitConfiguration {
         return new DirectExchange(EXCHANGE_DIRECT_SUBSCRIBE_UNSUBSCRIBE_REQUESTS);
     }
 
+    @Primary //fixme
     @Bean(EXCHANGE_DIRECT_SUBSCRIBE_UNSUBSCRIBE_REPLIES)
     public DirectExchange exchangeDirectSubscribeUnsubscribeReplies() {
         return new DirectExchange(EXCHANGE_DIRECT_SUBSCRIBE_UNSUBSCRIBE_REPLIES);
@@ -85,6 +96,7 @@ public class RabbitConfiguration {
         return new Queue(QUEUE_SUBSCRIBE_UNSUBSCRIBE_REQUESTS);
     }
 
+    @Primary //fixme
     @Bean(QUEUE_SUBSCRIBE_UNSUBSCRIBE_REPLIES)
     public Queue queueSubscribeUnsubscribeReplies() {
         return new Queue(QUEUE_SUBSCRIBE_UNSUBSCRIBE_REPLIES);

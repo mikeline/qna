@@ -4,17 +4,21 @@ import com.netcracker.interserver.messages.CheckStatusMessage;
 import com.netcracker.interserver.messages.SubscribeRequestMessage;
 import com.netcracker.models.Node;
 import com.netcracker.services.repo.NodeRepo;
+import com.netcracker.utils.NodeRole;
 import exception.MultipleSelfNodesQnAException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
+import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
@@ -42,7 +46,7 @@ public class ThisNode {
     @PostConstruct
     public void init() {
         loadSelf();
-        makeBindings();
+        configureRabbit();
 
         //todo: delete nodes if they are too old/ take too long to answer
 
@@ -56,6 +60,22 @@ public class ThisNode {
         updateNodeRole(subscribers);
     }
 
+    private void configureRabbit() {
+        template.setBeforePublishPostProcessors(
+                message ->
+                        MessageBuilder
+                                .fromMessage(message)
+                                .setHeader("sender", getUUID())
+                                .build()
+        );
+        admin.declareBinding(
+                BindingBuilder
+                        .bind(queueSubscribeUnsubscribeReplies)
+                        .to(exchangeDirectSubscribeUnsubscribeReplies)
+                        .with(getUUID().toString())
+        );
+    }
+
     private void loadSelf() {
         List<Node> selfNodes = nodeRepo.findByNodeRoleSelf();
         if (selfNodes.size() > 1){
@@ -64,19 +84,15 @@ public class ThisNode {
 
         if (selfNodes.size() == 0) {
             log.info("Generating new self node");
+            self = new Node();
+            self.setName("my name"); // fixme
+            self.setAuthorityToken("my token");
+            self.setNodeRole(NodeRole.SELF);
 
+            self = nodeRepo.save(self);
+        } else {
+            self = selfNodes.get(0);
         }
-
-        self = selfNodes.get(0);
-    }
-
-    private void makeBindings() {
-        admin.declareBinding(
-                BindingBuilder
-                        .bind(queueSubscribeUnsubscribeReplies)
-                        .to(exchangeDirectSubscribeUnsubscribeReplies)
-                        .with(getUUID().toString())
-        );
     }
 
     private void updateNodeRole(List<Node> producers) {
@@ -114,10 +130,35 @@ public class ThisNode {
                 .collect(Collectors.toSet());
     }
 
-    public void addSubscriber(UUID subscriberUUID) {
-        
+
+    // sets a node as a subscriber
+    public void addSubscriber(Node subscriberNode) {
+        subscriberNode.setNodeRole(NodeRole.PRODUCER);
+        nodeRepo.save(subscriberNode);
     }
 
-    public void removeSubscriber(UUID senderID) {
+    public void removeSubscriber(String senderID) {
+        UUID uuid;
+        try {
+            uuid = UUID.fromString(senderID);
+        } catch (IllegalArgumentException e) {
+            log.info(e);
+            return;
+        }
+
+        Optional<Node> subscriberNode = nodeRepo.findById(uuid);
+        subscriberNode.ifPresent(node -> {
+            node.setNodeRole(NodeRole.NONE);
+            nodeRepo.save(node);
+        });
+    }
+
+    public List<Node> getProducers() {
+        return nodeRepo.findByNodeRoleProducer();
+    }
+
+    public void addProducer(Node producerNode) {
+        producerNode.setNodeRole(NodeRole.PRODUCER);
+        nodeRepo.save(producerNode);
     }
 }

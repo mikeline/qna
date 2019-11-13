@@ -1,5 +1,6 @@
 package com.netcracker.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.netcracker.utils.NodeRole;
 import lombok.*;
@@ -13,6 +14,7 @@ import java.util.UUID;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @NoArgsConstructor
+@AllArgsConstructor
 @ToString
 @Entity
 @Data

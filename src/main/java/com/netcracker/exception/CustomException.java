@@ -1,5 +1,6 @@
 package com.netcracker.exception;
 
+import exception.QnAException;
 import org.springframework.http.HttpStatus;
 
 public class CustomException extends QnAException {

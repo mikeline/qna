@@ -1,12 +1,11 @@
 package com.netcracker.interserver.messages;
 
-import lombok.Data;
-import lombok.NonNull;
-import lombok.RequiredArgsConstructor;
+import lombok.*;
 
 @Data
-@RequiredArgsConstructor
+@AllArgsConstructor
+@NoArgsConstructor
 public class SubscribeResponseMessage {
 
-    final boolean accepted;
+    private boolean accepted;
 }
