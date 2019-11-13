@@ -16,6 +16,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -23,6 +24,7 @@ import org.springframework.stereotype.Service;
 import com.netcracker.security.JwtTokenProvider;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
@@ -44,6 +46,10 @@ public class UserService {
     public User getUserById(UUID id) {
         LOG.info("getUSerById");
         return userRepo.getOne(id);
+    }
+
+    public User findUserByUsername(String username) {
+        return userRepo.findByUsername(username);
     }
 
     public List<User> getAllUsers() {
@@ -105,6 +111,16 @@ public class UserService {
             throw new CustomException("The user doesn't exist", HttpStatus.NOT_FOUND);
         }
         return user;
+    }
+
+    public String getUsernameFromToken(HttpServletRequest req) {
+        return jwtTokenProvider.getUsername(jwtTokenProvider.resolveToken(req));
+    }
+
+    public Collection<? extends GrantedAuthority> getAuthoritiesFromToken(HttpServletRequest req) {
+        return jwtTokenProvider
+                .getAuthentication(jwtTokenProvider.resolveToken(req))
+                .getAuthorities();
     }
 
     public User whoAmI(HttpServletRequest req) {
