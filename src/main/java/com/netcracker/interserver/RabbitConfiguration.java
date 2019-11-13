@@ -13,26 +13,22 @@ import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
-import org.springframework.context.event.EventListener;
 
+
+
+//Some queues are defined and bind in ThisNode.java
 @Configuration
 public class RabbitConfiguration {
     public static final String RABBIT_ADDRESS = "localhost";
 
-    public static final String EXCHANGE_FANOUT_SUBSCRIBE_UNSUBSCRIBE_REQUESTS = "qna.fanoutSubscribeUnsubscribeRequests";
-    public static final String EXCHANGE_DIRECT_SUBSCRIBE_UNSUBSCRIBE_REQUESTS = "qna.directSubscribeUnsubscribeRequests";
-    public static final String EXCHANGE_DIRECT_SUBSCRIBE_UNSUBSCRIBE_REPLIES = "qna.directSubscribeUnsubscribeReplies";
-//    public static final String EXCHANGE_REPLICATE_DATA = "EXCHANGE_REPLICATE_DATA";
-//    public static final String EXCHANGE_SEARCH_DATA = "EXCHANGE_SEARCH_DATA";
-    public static final String EXCHANGE_CHECK_ROLE = "qna.checkStatus";
+    public static final String EXCHANGE_REQUEST_SUMMARY = "qna.exchangeRequestSummary";
+    public static final String QUEUE_REQUEST_SUMMARY = "qna.queueRequestSummary";
 
-    public static final String QUEUE_SUBSCRIBE_UNSUBSCRIBE_REQUESTS = "qna.subscribeUnsubscribeRequests";
-    public static final String QUEUE_SUBSCRIBE_UNSUBSCRIBE_REPLIES = "qna.subscribeUnsubscribeReplies";
-//    public static final String QUEUE_REPLICATE_DATA = "QUEUE_REPLICATE_DATA";
-//    public static final String QUEUE_SEARCH_DATA = "QUEUE_SEARCH_DATA";
+    public static final String EXCHANGE_REPLY_SUMMARY = "qna.exchangeReplyResume";
+    public static final String QUEUE_REPLY_SUMMARY = "qna.queueReplySummary";
 
-
-
+    public static final String EXCHANGE_PUBLISH_REPLICATION = "qna.exchangePublishReplication";
+    public static final String EXCHANGE_SEARCH_QUERIES = "qna.search_queries";
     @Bean
     public ConnectionFactory connectionFactory() {
         return new CachingConnectionFactory(RABBIT_ADDRESS);
@@ -70,83 +66,50 @@ public class RabbitConfiguration {
 
 
     // exchanges
+    @Bean
+    public FanoutExchange exchangeRequestSummary() {
+        return new FanoutExchange(EXCHANGE_REQUEST_SUMMARY);
+    }
 
     @Bean
-    public FanoutExchange exchangeFanoutSubscribeUnsubscribeRequests() {
-        return new FanoutExchange(EXCHANGE_FANOUT_SUBSCRIBE_UNSUBSCRIBE_REQUESTS);
+    public FanoutExchange exchangeReplyResume() {
+        return new FanoutExchange(EXCHANGE_REPLY_SUMMARY);
+    }
+
+    @Primary
+    @Bean
+    public TopicExchange exchangePublishReplication() {
+        return new TopicExchange(EXCHANGE_PUBLISH_REPLICATION);
     }
 
     @Bean
-    public DirectExchange exchangeDirectSubscribeUnsubscribeRequests() {
-        return new DirectExchange(EXCHANGE_DIRECT_SUBSCRIBE_UNSUBSCRIBE_REQUESTS);
+    public DirectExchange exchangeSearchQueries() {
+        return new DirectExchange(EXCHANGE_SEARCH_QUERIES);
     }
-
-    @Primary //fixme
-    @Bean(EXCHANGE_DIRECT_SUBSCRIBE_UNSUBSCRIBE_REPLIES)
-    public DirectExchange exchangeDirectSubscribeUnsubscribeReplies() {
-        return new DirectExchange(EXCHANGE_DIRECT_SUBSCRIBE_UNSUBSCRIBE_REPLIES);
-    }
-
-
 
     // queues
-
     @Bean
-    public Queue queueSubscribeUnsubscribeRequests() {
-        return new Queue(QUEUE_SUBSCRIBE_UNSUBSCRIBE_REQUESTS);
+    public Queue queueRequestSummary() {
+        return new Queue(QUEUE_REQUEST_SUMMARY);
     }
 
-    @Primary //fixme
-    @Bean(QUEUE_SUBSCRIBE_UNSUBSCRIBE_REPLIES)
-    public Queue queueSubscribeUnsubscribeReplies() {
-        return new Queue(QUEUE_SUBSCRIBE_UNSUBSCRIBE_REPLIES);
+    @Bean
+    public Queue queueReplySummary() {
+        return new Queue(QUEUE_REPLY_SUMMARY);
     }
 
-
-    // bindings
-
+    //bindings
     @Bean
-    public Binding bindFanoutSubscribeUnsubscribeRequests() {
+    public Binding bindRequestResume() {
         return BindingBuilder
-                .bind(queueSubscribeUnsubscribeRequests())
-                .to(exchangeFanoutSubscribeUnsubscribeRequests());
+                .bind(queueRequestSummary())
+                .to(exchangeRequestSummary());
     }
 
-//    // ??? can I get UUID Here???
-//    @Bean
-//    public Binding bindDirectSubscribeUnsubscriveRequests() {
-//        return BindingBuilder
-//                .bind(queueSubscribeUnsubscribeReplies())
-//                .to(exchangeDirectSubscribeUnsubscribeReplies())
-//                .with()
-//    }
-
-//    @Bean
-//    public Binding friendSearchBinding() {
-//        return BindingBuilder
-//                .bind(friendSearchQueue())
-//                .to(friendSearchExchange());
-//    }
-
-//    @Bean
-//    public Binding replicateDataBinding() {
-//        rabbitAdmin().removeBinding();
-//
-//        return BindingBuilder
-//                .bind(replicateDataQueue())
-//                .to(replicateDataExchange())
-//                .with();
-//
-//    }
-
-//    @Bean
-//    public Binding bindSearchData() {
-//        return BindingBuilder
-//                .bind(searchDataQueue())
-//                .to(searchDataExchange())
-//                .with();
-//    }
-
-
-
+    @Bean
+    public Binding bindReplyResume() {
+        return BindingBuilder
+                .bind(queueReplySummary())
+                .to(exchangeReplyResume());
+    }
 }

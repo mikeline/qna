@@ -1,29 +1,27 @@
 package com.netcracker.interserver;
 
-import com.netcracker.interserver.messages.CheckStatusMessage;
-import com.netcracker.interserver.messages.SubscribeRequestMessage;
+import com.netcracker.interserver.listeners.ReplicationListener;
+import com.netcracker.interserver.listeners.SearchListener;
+import com.netcracker.interserver.messages.SummaryRequest;
 import com.netcracker.models.Node;
 import com.netcracker.services.repo.NodeRepo;
 import com.netcracker.utils.NodeRole;
 import exception.MultipleSelfNodesQnAException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.DirectExchange;
-import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.core.MessageBuilder;
+import org.springframework.amqp.rabbit.listener.AbstractMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.ApplicationContext;
-import org.springframework.security.core.parameters.P;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.*;
-import java.util.stream.Collectors;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
@@ -33,47 +31,28 @@ public class ThisNode {
     private final RabbitTemplate template;
     private final RabbitAdmin admin;
     private final ApplicationContext context;
+    private final RabbitListenerEndpointRegistry registry;
 
-    @Qualifier(RabbitConfiguration.QUEUE_SUBSCRIBE_UNSUBSCRIBE_REPLIES)
-    private final Queue queueSubscribeUnsubscribeReplies;
-
-    @Qualifier(RabbitConfiguration.EXCHANGE_DIRECT_SUBSCRIBE_UNSUBSCRIBE_REPLIES)
-    private final DirectExchange exchangeDirectSubscribeUnsubscribeReplies;
+    private final TopicExchange replicationExchange;
+    private final DirectExchange searchExchange;
 
     private Node self;
+    private Queue replicationQueue;
+    private Queue searchQueue;
+    private Map<UUID, PublisherBindings> bindingsMap = new HashMap<>(); // maps PublisherUUID to bindings
 
+    private class PublisherBindings {
+        Binding replicateBinding;
+        Binding searchBinding;
+    }
 
     @PostConstruct
     public void init() {
         loadSelf();
+        log.info("self:  " + self);
+        loadPublishers();
         configureRabbit();
-
-        //todo: delete nodes if they are too old/ take too long to answer
-
-        List<Node> producers = nodeRepo.findByNodeRoleProducer();
-        updateNodeRole(producers);
-        if (producers.size() < 3) { // todo: wait for updateProducers to reply
-            findNewProducers();
-        }
-
-        List<Node> subscribers = nodeRepo.findByNodeRoleSubscriber();
-        updateNodeRole(subscribers);
-    }
-
-    private void configureRabbit() {
-        template.setBeforePublishPostProcessors(
-                message ->
-                        MessageBuilder
-                                .fromMessage(message)
-                                .setHeader("sender", getUUID())
-                                .build()
-        );
-        admin.declareBinding(
-                BindingBuilder
-                        .bind(queueSubscribeUnsubscribeReplies)
-                        .to(exchangeDirectSubscribeUnsubscribeReplies)
-                        .with(getUUID().toString())
-        );
+        requestSummaries();
     }
 
     private void loadSelf() {
@@ -95,70 +74,70 @@ public class ThisNode {
         }
     }
 
-    private void updateNodeRole(List<Node> producers) {
-        for(Node producer : producers) {
-            template.convertAndSend(
-                    RabbitConfiguration.EXCHANGE_DIRECT_SUBSCRIBE_UNSUBSCRIBE_REQUESTS,
-                    producer.getNodeId().toString(),
-                    new CheckStatusMessage()
-            );
-        }
+    private void loadPublishers() {
+
     }
 
-    public void findNewProducers() {
-        template.convertAndSend(
-                RabbitConfiguration.EXCHANGE_FANOUT_SUBSCRIBE_UNSUBSCRIBE_REQUESTS,
-                "",
-                new SubscribeRequestMessage(),
-                message ->
-                    MessageBuilder
-                            .fromMessage(message)
-                            .setHeader("sender", getUUID())
-                            .build()
+    // some configs are defined in RabbitConfiguration.java
+    private void configureRabbit() {
+        log.info("configuring rabbit");
+//        template.setBeforePublishPostProcessors(
+//                message ->
+//                        MessageBuilder
+//                                .fromMessage(message)
+//                                .setHeader("sender", self.getNodeId().toString())
+//                                .build()
+//        );
 
-        );
+        replicationQueue = admin.declareQueue();
+        searchQueue = admin.declareQueue();
+        log.info(registry);
+//        ((AbstractMessageListenerContainer) registry.getListenerContainer(ReplicationListener.ID)).addQueues(replicationQueue);
+//        ((AbstractMessageListenerContainer) registry.getListenerContainer(SearchListener.ID)).addQueues(replicationQueue);
     }
 
-    public UUID getUUID() {
-        return self.getNodeId();
+    private void requestSummaries() {
+        template.convertAndSend(RabbitConfiguration.EXCHANGE_REQUEST_SUMMARY, "", new SummaryRequest());
     }
 
-    public Set<String> getSubscribers() {
-        return nodeRepo.findByNodeRoleSubscriber()
-                .stream()
-                .map(Node::getNodeId).map(UUID::toString)
-                .collect(Collectors.toSet());
+    public Node getNode() {
+        return self; //fixme
     }
 
-
-    // sets a node as a subscriber
-    public void addSubscriber(Node subscriberNode) {
-        subscriberNode.setNodeRole(NodeRole.PRODUCER);
-        nodeRepo.save(subscriberNode);
+    public List<Node> getPublishers() {
+        return nodeRepo.findByNodeRolePublisher();
     }
 
-    public void removeSubscriber(String senderID) {
-        UUID uuid;
-        try {
-            uuid = UUID.fromString(senderID);
-        } catch (IllegalArgumentException e) {
-            log.info(e);
+    public void addPublisher(Node node) {
+        node.setNodeRole(NodeRole.PUBLISHER);
+        nodeRepo.save(node);
+
+        PublisherBindings bindings = new PublisherBindings();
+        bindings.replicateBinding = BindingBuilder
+                .bind(replicationQueue)
+                .to(replicationExchange)
+                .with(node.getNodeId().toString());
+        bindings.searchBinding = BindingBuilder
+                .bind(searchQueue)
+                .to(searchExchange)
+                .with(node.getNodeId().toString());
+        bindingsMap.put(node.getNodeId(), bindings);
+
+        admin.declareBinding(bindings.replicateBinding);
+        admin.declareBinding(bindings.searchBinding);
+    }
+
+    public void removePublisher(Node node) {
+        PublisherBindings bindings = bindingsMap.get(node.getNodeId());
+        if (bindings == null) {
             return;
         }
 
-        Optional<Node> subscriberNode = nodeRepo.findById(uuid);
-        subscriberNode.ifPresent(node -> {
-            node.setNodeRole(NodeRole.NONE);
-            nodeRepo.save(node);
-        });
-    }
+        admin.removeBinding(bindings.replicateBinding);
+        admin.removeBinding(bindings.searchBinding);
+        bindingsMap.remove(node.getNodeId());
 
-    public List<Node> getProducers() {
-        return nodeRepo.findByNodeRoleProducer();
-    }
-
-    public void addProducer(Node producerNode) {
-        producerNode.setNodeRole(NodeRole.PRODUCER);
-        nodeRepo.save(producerNode);
+        node.setNodeRole(NodeRole.NONE);
+        nodeRepo.save(node);
     }
 }

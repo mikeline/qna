@@ -11,9 +11,6 @@ public interface NodeRepo extends JpaRepository<Node, UUID> {
     @Query("select n from Node n where n.nodeRole = 'SELF'")
     List<Node> findByNodeRoleSelf();
 
-    @Query("select n from Node n where n.nodeRole = 'SUBSCRIBER'")
-    List<Node> findByNodeRoleSubscriber();
-
-    @Query("select n from Node n where n.nodeRole = 'PRODUCER'")
-    List<Node> findByNodeRoleProducer();
+    @Query("select n from Node n where n.nodeRole = 'PUBLISHER'")
+    List<Node> findByNodeRolePublisher();
 }

@@ -42,7 +42,7 @@ public class Node {
 
     @Getter
     @Setter
-    @ManyToMany(cascade = { CascadeType.ALL })
+    @ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
     @JoinTable(
             name = "node_user_replication",
             joinColumns = { @JoinColumn(name = "node_id") },
@@ -52,7 +52,7 @@ public class Node {
 
     @Getter
     @Setter
-    @ManyToMany(cascade = { CascadeType.ALL })
+    @ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
     @JoinTable(
             name = "node_post_replication",
             joinColumns = { @JoinColumn(name = "node_id") },
@@ -62,6 +62,7 @@ public class Node {
 
     @JsonIgnore
     @Enumerated(EnumType.STRING)
+    @Column(name = "node_role")
     private NodeRole nodeRole;
 
     @JsonIgnore
