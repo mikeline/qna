@@ -10,23 +10,31 @@ import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.messaging.Message;
+import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
 @Log4j
-@RabbitListener(queues = RabbitConfiguration.QUEUE_REQUEST_SUMMARY)
+@RabbitListener(id = SummaryRequestListener.ID)//(queues = RabbitConfiguration.QUEUE_REQUEST_SUMMARY)
 public class SummaryRequestListener {
+    public static final String ID = "SummaryRequestListener";
 
     private final RabbitTemplate template;
     private final ThisNode thisNode;
 
-//    @RabbitHandler
-//    public void summaryRequestHandler(@Payload SummaryRequest request, Message msg) {
-//        log.info(msg);
-//        template.convertAndSend(RabbitConfiguration.EXCHANGE_REPLY_SUMMARY, "", new Summary(thisNode.getNode()));
-//    }
+    @RabbitHandler
+    public Summary summaryRequestHandler(@Payload SummaryRequest request, @Header("sender") String senderUUID, Message msg) {
+        log.info("got a summary request");
+        log.info(msg);
+        if (senderUUID.equals(String.valueOf(thisNode.getNode().getNodeId()))) {
+            log.info("got my own message");
+            return null;
+        }
+
+        return new Summary(thisNode.getNode());
+    }
 
     @RabbitHandler(isDefault = true)
     public void defaultHandler(@Payload Object payload, Message msg) {

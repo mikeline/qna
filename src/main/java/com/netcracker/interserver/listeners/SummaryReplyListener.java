@@ -14,21 +14,24 @@ import org.springframework.stereotype.Component;
 @Component
 @Log4j
 @RequiredArgsConstructor
-@RabbitListener(queues = RabbitConfiguration.QUEUE_REPLY_SUMMARY)
+@RabbitListener(id = SummaryReplyListener.ID)
 public class SummaryReplyListener {
+    public static final String ID = "SummaryReplyListener";
 
     private final ThisNode thisNode;
 
     @RabbitHandler
     public void summaryReplyHandler(@Payload Summary summary, Message msg) {
+        log.info("got a reply!");
         log.info(msg);
+        log.info(summary);
 
-        // todo: better logic
-        if (thisNode.getPublishers().size() >= 3) {
-            return;
-        }
-
-        thisNode.addPublisher(summary.getNode());
+//        // todo: better logic
+//        if (thisNode.getPublishers().size() >= 3) {
+//            return;
+//        }
+//
+//        thisNode.addPublisher(summary.getNode());
     }
 
     @RabbitHandler(isDefault = true)
