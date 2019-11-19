@@ -17,7 +17,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.*;
 @NoArgsConstructor
 @ToString
 @Entity
-@Table(name = "qna_user", schema = "qna")
+@Table(name = "qna_user")
 public class User {
 
     @Id

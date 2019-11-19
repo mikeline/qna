@@ -13,7 +13,7 @@ import java.util.UUID;
 @NoArgsConstructor
 @ToString
 @Entity
-@Table(name = "topic", schema = "qna")
+@Table(name = "topic")
 public class Topic {
 
     @Id

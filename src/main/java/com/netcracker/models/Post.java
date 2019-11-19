@@ -16,7 +16,7 @@ import java.util.*;
 @NoArgsConstructor
 @ToString
 @Entity
-@Table(name = "post", schema = "qna")
+@Table(name = "post")
 public class Post {
 
     @Id

@@ -1,6 +1,7 @@
 package com.netcracker.config;
 import com.netcracker.interserver.RabbitConfiguration;
 import com.netcracker.security.WebSecurityConfig;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -64,12 +65,15 @@ public class HibernateConfig {
         return new PersistenceExceptionTranslationPostProcessor();
     }
 
+    @Value("${schema}")
+    private String schema;
+
     private Properties additionalProperties() {
         Properties properties = new Properties();
 
         properties.setProperty("hibernate.dialect", "org.hibernate.dialect.PostgreSQL9Dialect");
 
-        properties.setProperty("hibernate.default_schema", "qna");
+        properties.setProperty("hibernate.default_schema", schema);
 
         properties.setProperty("hibernate.hbm2ddl.auto", "update");
 

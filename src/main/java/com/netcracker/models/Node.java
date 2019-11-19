@@ -18,7 +18,7 @@ import java.util.UUID;
 @ToString
 @Entity
 @Data
-@Table(name = "node", schema = "qna")
+@Table(name = "node")
 public class Node {
 
     @Id
