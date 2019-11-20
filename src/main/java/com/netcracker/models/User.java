@@ -16,6 +16,7 @@ import static com.fasterxml.jackson.annotation.JsonInclude.*;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @NoArgsConstructor
 @ToString
+@Data
 @Entity
 @Table(name = "qna_user")
 public class User {
@@ -27,55 +28,34 @@ public class User {
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     @Column(name = "id", updatable = false, nullable = false)
-    @Getter
     private UUID userId;
 
-    @Getter
-    @Setter
     @Column(name = "full_name")
     private String fullName;
 
-    @Getter
-    @Setter
     private String username;
 
-    @Getter
-    @Setter
     @Column(name = "password_encrypted")
     private String passwordEncrypted;
 
-    @Getter
-    @Setter
     private String email;
 
     @CreationTimestamp
-    @Getter
-    @Setter
     @Column(name = "created_at")
     private LocalDateTime createdAt;
 
     @Enumerated(EnumType.STRING)
-    @Getter
-    @Setter
     private QnaRole role;
 
-    @Getter
-    @Setter
     private boolean original;
 
     @JsonIgnore
-    @Getter
-    @Setter
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> owningPosts = new ArrayList<>();
 
-    @Getter
-    @Setter
     @ManyToMany(mappedBy = "users")
     private Set<Node> nodes = new HashSet<>();
 
-    @Getter
-    @Setter
     @ManyToMany(cascade = { CascadeType.ALL })
     @JoinTable(
             name = "user_post_rating",
@@ -83,16 +63,5 @@ public class User {
             inverseJoinColumns = { @JoinColumn(name = "rated_post_id") }
     )
     private Set<Post> ratedPosts = new HashSet<>();
-
-    public User(String fullName, String username, String passwordEncrypted,
-                String email, QnaRole role) {
-        this.fullName = fullName;
-        this.username = username;
-        this.passwordEncrypted = passwordEncrypted;
-        this.email = email;
-        this.createdAt = LocalDateTime.now();
-        this.role = role;
-        this.original = true;
-    }
 
 }

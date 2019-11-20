@@ -10,6 +10,7 @@ import java.util.UUID;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @NoArgsConstructor
 @ToString
+@Data
 @Entity
 @Table(name = "comment")
 public class Comment {
@@ -21,17 +22,12 @@ public class Comment {
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     @Column(name = "id", updatable = false, nullable = false)
-    @Getter
     private UUID commentId;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
-    @Getter
-    @Setter
     private Post commentPost;
 
-    @Getter
-    @Setter
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "commented_post_id")
     private Post commentedPost;

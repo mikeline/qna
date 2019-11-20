@@ -5,6 +5,11 @@ server:
 hibernate:
   hbm2ddl:
     auto: create
+  search:
+    default:
+      directory_provider: filesystem
+      indexBase: /var/lucene/indexes
+
 
 schema:
   node1
