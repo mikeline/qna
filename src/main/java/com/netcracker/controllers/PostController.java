@@ -7,8 +7,7 @@ import com.netcracker.services.service.PostService;
 import com.netcracker.services.service.UserService;
 import com.netcracker.utils.QnaRole;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -25,13 +24,12 @@ import static org.springframework.http.HttpStatus.*;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
 import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 
+@Slf4j
 @RequiredArgsConstructor
 @SuppressWarnings("unused")
 @RestController
 @RequestMapping("/post")
 public class PostController {
-    private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
-
     private final PostService postService;
 
     private final PostRepo postRepo;
@@ -40,7 +38,6 @@ public class PostController {
     @RequestMapping(value = "/{id}", method = GET)
     @ResponseBody
     public ResponseEntity<Post> get(@PathVariable("id") String id) {
-        LOG.info("get request is received [id={}]", id);
 
         Post res = postService.getPostById(UUID.fromString(id));
 
@@ -51,7 +48,6 @@ public class PostController {
     @RequestMapping(value = "/", method = GET)
     @ResponseBody
     public ResponseEntity<Collection<Post>> getAll() {
-        LOG.info("getAll request is received.");
 
         return new ResponseEntity<>(postService.getAllPosts(), OK);
     }
@@ -60,7 +56,6 @@ public class PostController {
     @RequestMapping(method = POST)
     @ResponseBody
     public ResponseEntity<Post> create(@RequestBody Post post, HttpServletRequest req) {
-        LOG.info("create request is received [book={}]", post);
 
         Post res = postService.createPost(post, req);
 
@@ -71,7 +66,6 @@ public class PostController {
     @RequestMapping(value = "/{id}", method = DELETE)
     @ResponseBody
     public ResponseEntity delete(@PathVariable("id") String id, HttpServletRequest req) {
-        LOG.info("delete request is received [id={}]", id);
 
         HttpStatus status = postService.deletePostById(UUID.fromString(id), req);
 
@@ -82,7 +76,6 @@ public class PostController {
     @RequestMapping(method = PUT)
     @ResponseBody
     public ResponseEntity<Post> update(@RequestBody Post post, HttpServletRequest req) {
-        LOG.info("update request is received");
 
         Post res = postService.updatePost(post, req);
 

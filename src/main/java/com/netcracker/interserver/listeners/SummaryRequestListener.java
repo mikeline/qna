@@ -5,7 +5,7 @@ import com.netcracker.interserver.ThisNode;
 import com.netcracker.interserver.messages.Summary;
 import com.netcracker.interserver.messages.SummaryRequest;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
@@ -15,7 +15,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 @RequiredArgsConstructor
-@Log4j
+@Slf4j
 @RabbitListener(queues = RabbitConfiguration.QUEUE_REQUEST_SUMMARY)
 public class SummaryRequestListener {
 
@@ -30,6 +30,6 @@ public class SummaryRequestListener {
 
     @RabbitHandler(isDefault = true)
     public void defaultHandler(@Payload Object payload, Message msg) {
-        log.info(msg);
+        log.info("", msg);
     }
 }

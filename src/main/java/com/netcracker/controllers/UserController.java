@@ -8,8 +8,7 @@ import io.swagger.annotations.ApiParam;
 import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -22,57 +21,18 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 import java.util.UUID;
 
+@Slf4j
 @RequiredArgsConstructor
 @SuppressWarnings("unused")
 @RestController
 @RequestMapping("/user")
 public class UserController {
-    private static final Logger LOG = LoggerFactory.getLogger(UserController.class);
 
     private final UserService userService;
-
-//    @RequestMapping(value = "/{id}", method = GET)
-//    @ResponseBody
-//    public ResponseEntity<User> get(@PathVariable("id") String id) {
-//        LOG.info("get request is received [id={}]", id);
-//
-//        User res = userService.getUserById(UUID.fromString(id));
-//
-//        return res == null ? new ResponseEntity<>(NOT_FOUND) : new ResponseEntity<>(res, OK);
-//    }
-//
-//    @RequestMapping(value = "/", method = GET)
-//    @ResponseBody
-//    public ResponseEntity<Collection<User>> getAll() {
-//        LOG.info("getAll request is received.");
-//
-//        return new ResponseEntity<>(userService.getAllUsers(), OK);
-//    }
-//
-//    @RequestMapping(method = POST)
-//    @ResponseBody
-//    public ResponseEntity<User> create(@RequestBody User user) {
-//        LOG.info("create request is received [user={}]", user);
-//
-//        User res = userService.createUser(user);
-//
-//        return new ResponseEntity<>(res, CREATED);
-//    }
-
-//    @RequestMapping(value = "/{id}", method = DELETE)
-//    @ResponseBody
-//    public ResponseEntity delete(@PathVariable("id") String id) {
-//        LOG.info("delete request is received [id={}]", id);
-//
-//        userService.deleteUserById(UUID.fromString(id));
-//
-//        return new ResponseEntity(NO_CONTENT);
-//    }
 
     @RequestMapping(method = PUT)
     @ResponseBody
     public ResponseEntity<User> update(@RequestBody User user) {
-        LOG.info("update request is received");
 
         User res = userService.updateUser(user);
 

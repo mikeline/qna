@@ -1,18 +1,15 @@
 package com.netcracker.interserver;
 
-import com.netcracker.interserver.listeners.ReplicationListener;
-import com.netcracker.interserver.listeners.SearchListener;
 import com.netcracker.interserver.messages.SummaryRequest;
 import com.netcracker.models.Node;
 import com.netcracker.services.repo.NodeRepo;
 import com.netcracker.utils.NodeRole;
-import exception.MultipleSelfNodesQnAException;
+import com.netcracker.exception.MultipleSelfNodesQnAException;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
-import org.springframework.amqp.rabbit.listener.AbstractMessageListenerContainer;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
@@ -25,7 +22,7 @@ import java.util.UUID;
 
 @Component
 @RequiredArgsConstructor
-@Log4j
+@Slf4j
 public class ThisNode {
     private final NodeRepo nodeRepo;
     private final RabbitTemplate template;
@@ -91,7 +88,7 @@ public class ThisNode {
 
         replicationQueue = admin.declareQueue();
         searchQueue = admin.declareQueue();
-        log.info(registry);
+        log.info("registry", registry);
 //        ((AbstractMessageListenerContainer) registry.getListenerContainer(ReplicationListener.ID)).addQueues(replicationQueue);
 //        ((AbstractMessageListenerContainer) registry.getListenerContainer(SearchListener.ID)).addQueues(replicationQueue);
     }

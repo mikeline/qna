@@ -28,20 +28,13 @@ public class Node {
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     @Column(name = "id", updatable = false, nullable = false)
-    @Getter
     private UUID nodeId;
 
-    @Getter
-    @Setter
     private String name;
 
-    @Getter
-    @Setter
     @Column(name = "authority_token")
     private String authorityToken;
 
-    @Getter
-    @Setter
     @ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
     @JoinTable(
             name = "node_user_replication",
@@ -50,8 +43,6 @@ public class Node {
     )
     Set<User> users = new HashSet<>();
 
-    @Getter
-    @Setter
     @ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
     @JoinTable(
             name = "node_post_replication",

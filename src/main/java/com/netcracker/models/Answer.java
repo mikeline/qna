@@ -1,6 +1,6 @@
 package com.netcracker.models;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.*;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -10,6 +10,7 @@ import java.util.UUID;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @NoArgsConstructor
 @ToString
+@Data
 @Entity
 @Table(name = "answer", schema = "qna")
 public class Answer {
@@ -21,19 +22,21 @@ public class Answer {
             strategy = "org.hibernate.id.UUIDGenerator"
     )
     @Column(name = "id", updatable = false, nullable = false)
-    @Getter
     private UUID answerId;
 
-    @Getter
-    @Setter
+    @JsonIgnore
+    @JsonProperty("topic_id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "topicId")
+    @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "topic_id")
     private Topic topic;
 
+    @JsonProperty("post_id")
+    @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "postId")
+    @JsonIdentityReference(alwaysAsId = true)
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
-    @Getter
-    @Setter
     private Post answerPost;
 
 }

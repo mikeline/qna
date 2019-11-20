@@ -3,14 +3,14 @@ package com.netcracker.interserver.listeners;
 import com.netcracker.models.*;
 import com.netcracker.services.repo.*;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.messaging.handler.annotation.Payload;
 import org.springframework.stereotype.Component;
 
 @Component
-@Log4j
+@Slf4j
 @RequiredArgsConstructor
 @RabbitListener(id = ReplicationListener.ID)
 public class ReplicationListener {
