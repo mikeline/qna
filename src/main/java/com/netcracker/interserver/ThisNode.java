@@ -2,9 +2,9 @@ package com.netcracker.interserver;
 
 import com.netcracker.interserver.listeners.NodeRoleListener;
 import com.netcracker.interserver.listeners.ReplicationListener;
-import com.netcracker.interserver.listeners.SearchListener;
 import com.netcracker.interserver.messages.Replicate;
 import com.netcracker.interserver.messages.SummaryRequest;
+import com.netcracker.interserver.messages.UserAuthenticationReply;
 import com.netcracker.models.Node;
 import com.netcracker.services.repo.NodeRepo;
 import com.netcracker.services.repo.PostRepo;
@@ -12,7 +12,6 @@ import com.netcracker.utils.NodeRole;
 import com.sun.istack.NotNull;
 //import exception.MultipleSelfNodesQnAException;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.amqp.core.*;
 import org.springframework.amqp.core.Queue;
@@ -32,7 +31,6 @@ import java.util.*;
 import static com.netcracker.interserver.RabbitConfiguration.EXCHANGE_REQUEST_SUMMARY;
 
 @Component
-@RequiredArgsConstructor
 @Log4j
 public class ThisNode {
     private final NodeRepo nodeRepo;
@@ -45,18 +43,52 @@ public class ThisNode {
     private final TopicExchange replicationExchange;
     private final DirectExchange searchExchange;
 
+    private final FanoutExchange summaryRequestExchange;
+    private final FanoutExchange userAuthenticationExchange;
+
     private final Queue replicationQueue;
     private final Queue searchQueue;
     private final Queue nodeRoleQueue;
+    private final Queue userAuthenticationQueue;
+
+    private final String mynodename;
 
     //    private Map<UUID, PublisherBindings> bindingsMap = new HashMap<>(); // maps PublisherUUID to bindings
     @Getter
     private Node self;
     private Map<UUID, Binding> publisherBindings = new HashMap<>();
 
+    public ThisNode(NodeRepo nodeRepo,
+                    PostRepo postRepo,
+                    RabbitTemplate template,
+                    RabbitAdmin admin,
+                    RabbitListenerEndpointRegistry registry,
+                    TopicExchange replicationExchange,
+                    DirectExchange searchExchange,
+                    @Qualifier("summary_request") FanoutExchange summaryRequestExchange,
+                    @Qualifier("auth_exchange") FanoutExchange userAuthenticationExchange,
+                    Queue replicationQueue,
+                    Queue searchQueue,
+                    Queue nodeRoleQueue,
+                    Queue userAuthenticationQueue,
+                    @Value("${mynodename}") String mynodename) {
+        this.nodeRepo = nodeRepo;
+        this.postRepo = postRepo;
+        this.template = template;
+        this.admin = admin;
+        this.registry = registry;
+        this.replicationExchange = replicationExchange;
+        this.searchExchange = searchExchange;
+        this.summaryRequestExchange = summaryRequestExchange;
+        this.userAuthenticationExchange = userAuthenticationExchange;
+        this.replicationQueue = replicationQueue;
+        this.searchQueue = searchQueue;
+        this.nodeRoleQueue = nodeRoleQueue;
+        this.userAuthenticationQueue = userAuthenticationQueue;
+        this.mynodename = mynodename;
+    }
 
-    @Qualifier(EXCHANGE_REQUEST_SUMMARY) //fixme qualifiers do not work with lombok wtf?
-    private final FanoutExchange summaryRequestExchange;
+
 //    @Qualifier(RabbitConfiguration.EXCHANGE_REPLY_SUMMARY)
 //    private final FanoutExchange summaryReplyExchange;
 //
@@ -86,10 +118,9 @@ public class ThisNode {
 //        template.setReplyAddress(nodeRoleQueue.getName());
 //        admin.declareBinding(BindingBuilder.bind(summaryReplyQueue).to(summaryReplyExchange));
         admin.declareBinding(BindingBuilder.bind(nodeRoleQueue).to(summaryRequestExchange));
+        admin.declareBinding(BindingBuilder.bind(userAuthenticationQueue).to(userAuthenticationExchange));
     }
 
-    @Value("${mynodename}")
-    private String mynodename;
 
     private void loadSelf() {
         List<Node> selfNodes = nodeRepo.findByNodeRoleSelf();

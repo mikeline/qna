@@ -4,6 +4,7 @@ import com.google.common.base.Predicates;
 import com.netcracker.services.repo.AnswerRepo;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
@@ -20,25 +21,25 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;
 
-@SpringBootApplication
+@SpringBootApplication(exclude = {SecurityAutoConfiguration.class})
 @EnableSwagger2
 public class Application {
     public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 
-    @Bean
-    public Docket swaggerSettings() {
-        return new Docket(DocumentationType.SWAGGER_2)
-                .select()//
-                .apis(RequestHandlerSelectors.any())//
-                .paths(Predicates.not(PathSelectors.regex("/error")))//
-                .build()//
-                .useDefaultResponseMessages(false)//
-                .securitySchemes(new ArrayList<>(Arrays.asList(new ApiKey("Bearer %token", "Authorization", "Header"))))//
-                .tags(new Tag("users", "Operations about users"))//
-                .tags(new Tag("ping", "Just a ping"))//
-                .genericModelSubstitutes(Optional.class);
-    }
+//    @Bean
+//    public Docket swaggerSettings() {
+//        return new Docket(DocumentationType.SWAGGER_2)
+//                .select()//
+//                .apis(RequestHandlerSelectors.any())//
+//                .paths(Predicates.not(PathSelectors.regex("/error")))//
+//                .build()//
+//                .useDefaultResponseMessages(false)//
+//                .securitySchemes(new ArrayList<>(Arrays.asList(new ApiKey("Bearer %token", "Authorization", "Header"))))//
+//                .tags(new Tag("users", "Operations about users"))//
+//                .tags(new Tag("ping", "Just a ping"))//
+//                .genericModelSubstitutes(Optional.class);
+//    }
 
 }

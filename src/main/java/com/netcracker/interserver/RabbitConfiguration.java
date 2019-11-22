@@ -32,8 +32,7 @@ public class RabbitConfiguration {
     public static final String EXCHANGE_PUBLISH_REPLICATION = "qna.exchangePublishReplication";
     public static final String EXCHANGE_SEARCH_QUERIES = "qna.search_queries";
 
-    public static final String EXCHANGE_AUTH_QUERIES = "qna.auth_queries";
-    public static final String QUEUE_AUTH_SUMMARY = "qna.queueAuthSummary";
+    public static final String EXCHANGE_USER_AUTHENTICATION = "qna.userAuthenticationExchange";
 
     @Bean
     public RabbitAdmin rabbitAdmin() {
@@ -81,7 +80,11 @@ public class RabbitConfiguration {
 
 
     // exchanges
-    @Bean(EXCHANGE_REQUEST_SUMMARY)
+
+    @Bean("auth_exchange")
+    public FanoutExchange exchangeAuthQuery() { return new FanoutExchange(EXCHANGE_USER_AUTHENTICATION); }
+
+    @Bean("summary_request")
     public FanoutExchange exchangeRequestSummary() {
         return new FanoutExchange(EXCHANGE_REQUEST_SUMMARY);
     }
@@ -100,9 +103,6 @@ public class RabbitConfiguration {
     public DirectExchange exchangeSearchQueries() {
         return new DirectExchange(EXCHANGE_SEARCH_QUERIES);
     }
-//
-//    @Bean
-//    public FanoutExchange exchangeAuthQuery() { return new FanoutExchange(EXCHANGE_AUTH_QUERIES); }
 
     // queues
     @Bean
@@ -124,9 +124,4 @@ public class RabbitConfiguration {
 //                .bind(queueRequestSummary())
 //                .to(exchangeRequestSummary());
 //    }
-    @Bean
-    public Queue queueAuthSummary() {
-        return new Queue(QUEUE_AUTH_SUMMARY);
-    }
-
 }
