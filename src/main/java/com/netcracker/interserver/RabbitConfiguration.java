@@ -81,7 +81,7 @@ public class RabbitConfiguration {
 
 
     // exchanges
-    @Bean(name = EXCHANGE_REQUEST_SUMMARY)
+    @Bean(EXCHANGE_REQUEST_SUMMARY)
     public FanoutExchange exchangeRequestSummary() {
         return new FanoutExchange(EXCHANGE_REQUEST_SUMMARY);
     }
@@ -91,7 +91,6 @@ public class RabbitConfiguration {
 //        return new FanoutExchange(EXCHANGE_REPLY_SUMMARY);
 //    }
 
-    @Primary
     @Bean
     public TopicExchange exchangePublishReplication() {
         return new TopicExchange(EXCHANGE_PUBLISH_REPLICATION);
@@ -101,13 +100,14 @@ public class RabbitConfiguration {
     public DirectExchange exchangeSearchQueries() {
         return new DirectExchange(EXCHANGE_SEARCH_QUERIES);
     }
-
-    @Bean
-    public FanoutExchange exchangeAuthQuery() { return new FanoutExchange(EXCHANGE_AUTH_QUERIES); }
+//
+//    @Bean
+//    public FanoutExchange exchangeAuthQuery() { return new FanoutExchange(EXCHANGE_AUTH_QUERIES); }
 
     // queues
     @Bean
     @Scope("prototype")
+    @Primary
     public Queue queue() {
         return rabbitAdmin().declareQueue();
     }

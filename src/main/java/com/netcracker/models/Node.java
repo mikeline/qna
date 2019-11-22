@@ -22,12 +22,13 @@ import java.util.UUID;
 public class Node {
 
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(generator = "ifnull-uuid")
     @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
+            name = "ifnull-uuid",
+            strategy = "com.netcracker.services.IfNullUUIDGenerator"
     )
     @Column(name = "id", updatable = false, nullable = false)
+    @Getter
     private UUID nodeId;
 
     private String name;

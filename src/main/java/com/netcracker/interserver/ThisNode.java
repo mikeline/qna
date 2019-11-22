@@ -1,38 +1,43 @@
 package com.netcracker.interserver;
 
+import com.netcracker.interserver.listeners.NodeRoleListener;
 import com.netcracker.interserver.listeners.ReplicationListener;
 import com.netcracker.interserver.listeners.SearchListener;
-import com.netcracker.interserver.listeners.SummaryReplyListener;
-import com.netcracker.interserver.listeners.SummaryRequestListener;
+import com.netcracker.interserver.messages.Replicate;
 import com.netcracker.interserver.messages.SummaryRequest;
 import com.netcracker.models.Node;
 import com.netcracker.services.repo.NodeRepo;
+import com.netcracker.services.repo.PostRepo;
 import com.netcracker.utils.NodeRole;
-import exception.MultipleSelfNodesQnAException;
+import com.sun.istack.NotNull;
+//import exception.MultipleSelfNodesQnAException;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.amqp.core.*;
-import org.springframework.amqp.rabbit.annotation.RabbitListener;
+import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
 import org.springframework.amqp.rabbit.listener.SimpleMessageListenerContainer;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
+
+import static com.netcracker.interserver.RabbitConfiguration.EXCHANGE_REQUEST_SUMMARY;
 
 @Component
 @RequiredArgsConstructor
 @Log4j
 public class ThisNode {
     private final NodeRepo nodeRepo;
+    private final PostRepo postRepo;
+
     private final RabbitTemplate template;
     private final RabbitAdmin admin;
     private final RabbitListenerEndpointRegistry registry;
@@ -40,23 +45,25 @@ public class ThisNode {
     private final TopicExchange replicationExchange;
     private final DirectExchange searchExchange;
 
-    private Node self;
     private final Queue replicationQueue;
     private final Queue searchQueue;
-    private Map<UUID, PublisherBindings> bindingsMap = new HashMap<>(); // maps PublisherUUID to bindings
+    private final Queue nodeRoleQueue;
 
-    private final Queue summaryRequestQueue; // очередь в которую попадают просьбы выслать summary
-    private final Queue summaryReplyQueue; // очередь в которую попадают summaries
+    //    private Map<UUID, PublisherBindings> bindingsMap = new HashMap<>(); // maps PublisherUUID to bindings
+    @Getter
+    private Node self;
+    private Map<UUID, Binding> publisherBindings = new HashMap<>();
 
-    @Qualifier(RabbitConfiguration.EXCHANGE_REQUEST_SUMMARY)
+
+    @Qualifier(EXCHANGE_REQUEST_SUMMARY) //fixme qualifiers do not work with lombok wtf?
     private final FanoutExchange summaryRequestExchange;
 //    @Qualifier(RabbitConfiguration.EXCHANGE_REPLY_SUMMARY)
 //    private final FanoutExchange summaryReplyExchange;
-
-    private class PublisherBindings {
-        Binding replicateBinding;
-        Binding searchBinding;
-    }
+//
+//    private class PublisherBindings {
+//        Binding replicateBinding;
+//        Binding searchBinding;
+//    }
 
     @PostConstruct
     public void init() {
@@ -76,22 +83,24 @@ public class ThisNode {
     }
 
     private void bindRabbitQueues() {
-        template.setReplyAddress(summaryReplyQueue.getName());
+//        template.setReplyAddress(nodeRoleQueue.getName());
 //        admin.declareBinding(BindingBuilder.bind(summaryReplyQueue).to(summaryReplyExchange));
-        admin.declareBinding(BindingBuilder.bind(summaryRequestQueue).to(summaryRequestExchange));
+        admin.declareBinding(BindingBuilder.bind(nodeRoleQueue).to(summaryRequestExchange));
     }
 
+    @Value("${mynodename}")
+    private String mynodename;
 
     private void loadSelf() {
         List<Node> selfNodes = nodeRepo.findByNodeRoleSelf();
         if (selfNodes.size() > 1){
-            throw new MultipleSelfNodesQnAException();
+            throw new RuntimeException("Mulitple nodes are declared as 'SELF' in the database");//MultipleSelfNodesQnAException();
         }
 
         if (selfNodes.size() == 0) {
             log.info("Generating new self node");
             self = new Node();
-            self.setName("my name"); // fixme
+            self.setName(mynodename); // fixme
             self.setAuthorityToken("my token");
             self.setNodeRole(NodeRole.SELF);
 
@@ -107,24 +116,22 @@ public class ThisNode {
 
     // some configs are defined in RabbitConfiguration.java
     private void configureRabbit() {
-        log.info("configuring rabbit");
-        template.setBeforePublishPostProcessors(
-                message ->
-                        MessageBuilder
-                                .fromMessage(message)
-                                .setHeader("sender", self.getNodeId().toString())
-                                .build()
+        log.debug("configuring rabbit");
+        template.addBeforePublishPostProcessors(
+                message -> {
+                    message.getMessageProperties().setReplyTo(nodeRoleQueue.getName());
+                    message.getMessageProperties().getHeaders().put("sender", self.getNodeId().toString());
+                    return message;
+                }
         );
 
-        log.info(registry);
-        log.info(registry.getListenerContainerIds());
-        log.info(registry.getListenerContainer(ReplicationListener.ID));
-        log.info(registry.getListenerContainer(SearchListener.ID));
+        log.debug(registry);
 
+        register(NodeRoleListener.ID, nodeRoleQueue);
 
-        register(SummaryReplyListener.ID, summaryReplyQueue);
-        register(SummaryRequestListener.ID, summaryRequestQueue);
-//        register(ReplicationListener.ID, replicationQueue);
+//        register(SummaryReplyListener.ID, summaryReplyQueue);
+//        register(SummaryRequestListener.ID, summaryRequestQueue);
+        register(ReplicationListener.ID, replicationQueue);
 //        register(SearchListener.ID, replicationQueue);
     }
 
@@ -133,17 +140,7 @@ public class ThisNode {
     }
 
     private void requestSummaries() {
-        template.convertAndSend(
-                RabbitConfiguration.EXCHANGE_REQUEST_SUMMARY,
-                "",
-                new SummaryRequest(self),
-                message ->
-                    MessageBuilder
-                            .fromMessage(message)
-                            .setReplyTo(summaryReplyQueue.getName())
-                            .build()
-        );
-//        template.convertAndSend(RabbitConfiguration.EXCHANGE_REQUEST_SUMMARY, "", new SummaryRequest(self));
+        template.convertAndSend(EXCHANGE_REQUEST_SUMMARY,"", new SummaryRequest(self));
     }
 
     public Node getNode() {
@@ -154,36 +151,59 @@ public class ThisNode {
         return nodeRepo.findByNodeRolePublisher();
     }
 
-    public void addPublisher(Node node) {
-        node.setNodeRole(NodeRole.PUBLISHER);
-        nodeRepo.save(node);
-
-        PublisherBindings bindings = new PublisherBindings();
-        bindings.replicateBinding = BindingBuilder
-                .bind(replicationQueue)
-                .to(replicationExchange)
-                .with(node.getNodeId().toString());
-        bindings.searchBinding = BindingBuilder
-                .bind(searchQueue)
-                .to(searchExchange)
-                .with(node.getNodeId().toString());
-        bindingsMap.put(node.getNodeId(), bindings);
-
-        admin.declareBinding(bindings.replicateBinding);
-        admin.declareBinding(bindings.searchBinding);
+    public boolean addPublisher(@NotNull Node node) {
+        boolean saved = saveNodeWithRole(node, NodeRole.PUBLISHER);
+        if (saved) {
+            Binding newPublisherBinding =
+                    BindingBuilder
+                            .bind(replicationQueue)
+                            .to(replicationExchange)
+                            .with(node.getNodeId().toString());
+            publisherBindings.put(node.getNodeId(), newPublisherBinding);
+            admin.declareBinding(newPublisherBinding);
+        }
+        return saved;
     }
 
-    public void removePublisher(Node node) {
-        PublisherBindings bindings = bindingsMap.get(node.getNodeId());
-        if (bindings == null) {
+    private void sendCurrentDB(Node node) {
+        Replicate replicate = new Replicate(postRepo.findAll());
+
+//        template.convertAndSend(EXCHANGE_PUBLISH_REPLICATION, self.getNodeId().toString(), replicate);
+    }
+
+    public void removePublisher(@NotNull Node node) {
+        if (node.getNodeId().equals(self.getNodeId())) {
+            log.debug("please stop!");
             return;
         }
 
-        admin.removeBinding(bindings.replicateBinding);
-        admin.removeBinding(bindings.searchBinding);
-        bindingsMap.remove(node.getNodeId());
+        Binding publisher = publisherBindings.get(node.getNodeId());
+        if (publisher == null ) {
+            return;
+        }
 
-        node.setNodeRole(NodeRole.NONE);
+        publisherBindings.remove(node.getNodeId());
+        admin.removeBinding(publisher);
+    }
+
+    public List<Node> getSubscribers() {
+        return nodeRepo.findByNodeRoleSubscribers();
+    }
+
+
+    public boolean addSubscriber(Node node) {
+        return saveNodeWithRole(node, NodeRole.SUBSCRIBER);
+    }
+
+    private boolean saveNodeWithRole(Node node, NodeRole role) {
+        Optional<Node> savedNode = nodeRepo.findById(node.getNodeId());
+        if (savedNode.isPresent() && savedNode.get().getNodeRole() != NodeRole.NONE) {
+            return false;
+        }
+
+        node.setNodeRole(role);
         nodeRepo.save(node);
+
+        return true;
     }
 }

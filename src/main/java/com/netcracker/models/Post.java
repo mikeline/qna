@@ -2,6 +2,7 @@ package com.netcracker.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.netcracker.interserver.messages.Replicable;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
@@ -18,7 +19,7 @@ import java.util.*;
 @Data
 @Entity
 @Table(name = "post")
-public class Post {
+public class Post implements Replicable {
 
     @Id
     @GeneratedValue(generator = "UUID")
@@ -28,7 +29,6 @@ public class Post {
     )
     @Column(name = "id", updatable = false, nullable = false)
     private UUID postId;
-
     private String body;
 
     @Enumerated(EnumType.STRING)
