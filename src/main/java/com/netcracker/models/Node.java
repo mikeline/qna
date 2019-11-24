@@ -36,6 +36,9 @@ public class Node {
     @Column(name = "authority_token")
     private String authorityToken;
 
+    @Column(name = "owner_id")
+    private UUID ownerId;
+
     @ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
     @JoinTable(
             name = "node_user_replication",

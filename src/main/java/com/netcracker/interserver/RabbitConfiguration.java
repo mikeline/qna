@@ -2,14 +2,16 @@ package com.netcracker.interserver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.springframework.amqp.core.*;
+import org.springframework.amqp.core.DirectExchange;
+import org.springframework.amqp.core.FanoutExchange;
+import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
-import org.springframework.amqp.support.converter.DefaultClassMapper;
 import org.springframework.amqp.support.converter.Jackson2JavaTypeMapper;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
 import org.springframework.context.annotation.Bean;
@@ -18,7 +20,7 @@ import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.Scope;
 
 
-//Some queues are defined and bind in ThisNode.java
+//Some queues are defined and bind in InterserverCommunication.java
 @Configuration
 public class RabbitConfiguration {
     public static final String RABBIT_ADDRESS = "localhost";
@@ -81,10 +83,10 @@ public class RabbitConfiguration {
 
     // exchanges
 
-    @Bean("auth_exchange")
-    public FanoutExchange exchangeAuthQuery() { return new FanoutExchange(EXCHANGE_USER_AUTHENTICATION); }
+    @Bean(EXCHANGE_USER_AUTHENTICATION)
+    public FanoutExchange exchangeUserAuthentication() { return new FanoutExchange(EXCHANGE_USER_AUTHENTICATION); }
 
-    @Bean("summary_request")
+    @Bean(EXCHANGE_REQUEST_SUMMARY)
     public FanoutExchange exchangeRequestSummary() {
         return new FanoutExchange(EXCHANGE_REQUEST_SUMMARY);
     }

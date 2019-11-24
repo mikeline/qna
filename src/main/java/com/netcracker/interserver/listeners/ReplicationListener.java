@@ -4,6 +4,7 @@ import com.netcracker.interserver.messages.Replicable;
 import com.netcracker.interserver.messages.Replicate;
 import com.netcracker.models.*;
 import com.netcracker.services.repo.*;
+import com.netcracker.services.service.NodeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.amqp.core.Message;
@@ -25,7 +26,7 @@ public class ReplicationListener {
 
     private final AnswerRepo answerRepo;
     private final CommentRepo commentRepo;
-    private final NodeRepo nodeRepo;
+    private final NodeService nodeService;
     private final PostRepo postRepo;
     private final TopicRepo topicRepo;
     private final UserRepo userRepo;
@@ -65,7 +66,7 @@ public class ReplicationListener {
 
         answerRepo.saveAll(answers);
         commentRepo.saveAll(comments);
-        nodeRepo.saveAll(nodes);
+        nodeService.saveAllReplication(nodes);
         postRepo.saveAll(posts);
         topicRepo.saveAll(topics);
         userRepo.saveAll(users);

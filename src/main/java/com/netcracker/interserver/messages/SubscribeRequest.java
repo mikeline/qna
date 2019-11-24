@@ -10,9 +10,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class SubscribeRequest {
     private Node node;
-//    private
-
-    enum SubEnum {
+    private SubStatus status;
+    public enum SubStatus {
         SUBSCRIBE,
         UNSUBSCRIBE
     }
