@@ -4,11 +4,14 @@ import com.netcracker.interserver.listeners.NodeRoleListener;
 import com.netcracker.interserver.listeners.ReplicationListener;
 import com.netcracker.interserver.messages.Replicate;
 import com.netcracker.interserver.messages.SummaryRequest;
+import com.netcracker.interserver.messages.UserAuthenticationReply;
+import com.netcracker.interserver.messages.UserAuthenticationRequest;
 import com.netcracker.models.Node;
 import com.netcracker.services.repo.PostRepo;
 import com.netcracker.services.service.NodeService;
 import lombok.extern.log4j.Log4j;
 import org.springframework.amqp.core.*;
+import org.springframework.amqp.rabbit.AsyncRabbitTemplate;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.RabbitListenerEndpointRegistry;
@@ -18,6 +21,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.event.ContextRefreshedEvent;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
+import org.springframework.util.concurrent.ListenableFuture;
 
 import javax.annotation.PostConstruct;
 import java.util.HashMap;
@@ -41,6 +45,7 @@ public class InterserverCommunication {
     private final PostRepo postRepo;
 
     private final RabbitTemplate template;
+    private final AsyncRabbitTemplate asyncTemplate;
     private final RabbitAdmin admin;
     private final RabbitListenerEndpointRegistry registry;
 
@@ -63,6 +68,7 @@ public class InterserverCommunication {
     public InterserverCommunication(NodeService nodeService,
                                     PostRepo postRepo,
                                     RabbitTemplate template,
+                                    AsyncRabbitTemplate asyncTemplate,
                                     RabbitAdmin admin,
                                     RabbitListenerEndpointRegistry registry,
                                     TopicExchange replicationExchange,
@@ -77,6 +83,7 @@ public class InterserverCommunication {
         this.nodeService = nodeService;
         this.postRepo = postRepo;
         this.template = template;
+        this.asyncTemplate = asyncTemplate;
         this.admin = admin;
         this.registry = registry;
         this.replicationExchange = replicationExchange;
@@ -169,5 +176,7 @@ public class InterserverCommunication {
 //        template.convertAndSend(EXCHANGE_PUBLISH_REPLICATION, self.getNodeId().toString(), replicate);
     }
 
-
+    public ListenableFuture<UserAuthenticationReply> sendUserAuthenticationRequest(UserAuthenticationRequest request) {
+        return asyncTemplate.convertSendAndReceive(EXCHANGE_USER_AUTHENTICATION, "", request);
+    }
 }

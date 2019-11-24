@@ -6,6 +6,7 @@ import org.springframework.amqp.core.DirectExchange;
 import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.core.TopicExchange;
+import org.springframework.amqp.rabbit.AsyncRabbitTemplate;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.connection.ConnectionFactory;
@@ -46,6 +47,12 @@ public class RabbitConfiguration {
         RabbitTemplate rabbitTemplate = new RabbitTemplate(connectionFactory());
         rabbitTemplate.setMessageConverter(jsonMessageConverter());
         return rabbitTemplate;
+    }
+
+    @Bean
+    public AsyncRabbitTemplate asyncRabbitTemplate() {
+        AsyncRabbitTemplate template = new AsyncRabbitTemplate(rabbitTemplate());
+        return template;
     }
 
     @Bean
