@@ -49,6 +49,10 @@ public class User {
 
     private boolean original;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owning_node_id")
+    private Node originalNodeForUser;
+
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> owningPosts = new ArrayList<>();

@@ -1,5 +1,6 @@
 package com.netcracker.controllers;
 
+import com.netcracker.interserver.messages.UserAuthenticationReply;
 import com.netcracker.models.User;
 import com.netcracker.services.repo.UserRepo;
 import com.netcracker.services.service.UserService;
@@ -9,6 +10,7 @@ import io.swagger.annotations.ApiResponse;
 import io.swagger.annotations.ApiResponses;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +22,7 @@ import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 import java.util.UUID;
+import java.util.concurrent.Future;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -44,9 +47,9 @@ public class UserController {
     @ApiResponses(value = {//
             @ApiResponse(code = 400, message = "Something went wrong"), //
             @ApiResponse(code = 422, message = "Invalid username/password supplied")})
-    public String login(//
-                        @ApiParam("Username") @RequestParam String username, //
-                        @ApiParam("Password") @RequestParam String password) {
+    public Future<UserAuthenticationReply> login(//
+                                                 @ApiParam("Username") @RequestParam String username, //
+                                                 @ApiParam("Password") @RequestParam String password) throws InterruptedException {
         return userService.signin(username, password);
     }
 

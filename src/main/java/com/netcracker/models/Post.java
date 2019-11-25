@@ -47,6 +47,10 @@ public class Post implements Replicable {
 
     private boolean original;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owning_node_id")
+    private Node originalNodeForPost;
+
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")

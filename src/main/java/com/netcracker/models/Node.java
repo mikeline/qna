@@ -8,9 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.HashSet;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @NoArgsConstructor
@@ -18,7 +16,7 @@ import java.util.UUID;
 @ToString
 @Entity
 @Data
-@Table(name = "node")
+@Table(name = "node", schema = "qna")
 public class Node {
 
     @Id
@@ -28,7 +26,6 @@ public class Node {
             strategy = "com.netcracker.services.IfNullUUIDGenerator"
     )
     @Column(name = "id", updatable = false, nullable = false)
-    @Getter
     private UUID nodeId;
 
     private String name;
@@ -36,8 +33,11 @@ public class Node {
     @Column(name = "authority_token")
     private String authorityToken;
 
-    @Column(name = "owner_id")
-    private UUID ownerId;
+    @OneToMany(fetch = FetchType.EAGER, mappedBy = "originalNodeForUser",  cascade = CascadeType.PERSIST, orphanRemoval = true)
+    private List<User> childUsers = new ArrayList<>();
+
+//    @OneToMany(fetch = FetchType.LAZY, mappedBy = "originalNodeForPost", cascade = CascadeType.PERSIST, orphanRemoval = true)
+//    private List<Post> childPosts = new ArrayList<>();
 
     @ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
     @JoinTable(

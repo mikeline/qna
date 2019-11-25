@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
 
+import com.netcracker.services.service.NodeService;
 import com.netcracker.utils.QnaRole;
 import com.netcracker.exception.CustomHttpException;
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,8 @@ public class JwtTokenProvider {
 
     private final MyUserDetails myUserDetails;
 
+    private final NodeService nodeService;
+
     @PostConstruct
     protected void init() {
         secretKey = Base64.getEncoder().encodeToString(secretKey.getBytes());
@@ -50,6 +53,7 @@ public class JwtTokenProvider {
 
         Claims claims = Jwts.claims().setSubject(username);
         claims.put("auth", roles.stream().map(s -> new SimpleGrantedAuthority(s.getAuthority())).filter(Objects::nonNull).collect(Collectors.toList()));
+        claims.put("address", nodeService.getSelf().getName());
 
         Date now = new Date();
         Date validity = new Date(now.getTime() + validityInMilliseconds);
@@ -69,6 +73,12 @@ public class JwtTokenProvider {
 
     public String getUsername(String token) {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+    }
+
+    public String getAddress(String token) {
+        Claims claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJwt(token).getBody();
+        return (String) claims.get("address");
+
     }
 
     public String resolveToken(HttpServletRequest req) {

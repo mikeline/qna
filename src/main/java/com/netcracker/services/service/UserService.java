@@ -2,12 +2,17 @@ package com.netcracker.services.service;
 
 import javax.servlet.http.HttpServletRequest;
 
+import com.netcracker.interserver.InterserverCommunication;
+import com.netcracker.interserver.messages.UserAuthenticationReply;
+import com.netcracker.interserver.messages.UserAuthenticationRequest;
 import com.netcracker.models.User;
 import com.netcracker.services.repo.UserRepo;
 import com.netcracker.utils.QnaRole;
 import com.netcracker.exception.CustomHttpException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.AuthenticationException;
@@ -17,11 +22,15 @@ import org.springframework.stereotype.Service;
 
 
 import com.netcracker.security.JwtTokenProvider;
+import org.springframework.util.concurrent.ListenableFuture;
+import org.springframework.util.concurrent.ListenableFutureCallback;
+import org.springframework.util.concurrent.SuccessCallback;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
+import java.util.concurrent.Future;
 
 
 @RequiredArgsConstructor
@@ -35,6 +44,8 @@ public class UserService {
     private final JwtTokenProvider jwtTokenProvider;
 
     private final AuthenticationManager authenticationManager;
+
+    private final InterserverCommunication interserverCommunication;
 
     public User getUserById(UUID id) {
         return userRepo.getOne(id);
@@ -60,16 +71,31 @@ public class UserService {
         userRepo.deleteById(id);
     }
 
-    public String signin(String username, String password){
-        try {
-            List<QnaRole> roles = new ArrayList<>();
-            User user = userRepo.findByUsername(username);
-            roles.add(user.getRole());
-            authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password, roles));
-            return jwtTokenProvider.createToken(username, roles);
-        } catch (AuthenticationException e) {
+    public List<QnaRole> doAuthAndGetRoles(String username, String password) throws AuthenticationException {
+        List<QnaRole> roles = new ArrayList<>();
+        User user = userRepo.findByUsername(username);
+        roles.add(user.getRole());
+        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password, roles));
+        return roles;
+    }
 
-            throw new CustomHttpException("Invalid username/password supplied", HttpStatus.UNPROCESSABLE_ENTITY);
+    public UserAuthenticationReply localAuth(UserAuthenticationRequest req) {
+        try {
+            List<QnaRole> roles = doAuthAndGetRoles(req.getUsername(), req.getPassword());
+            return new UserAuthenticationReply(jwtTokenProvider.createToken(req.getUsername(), roles));
+        } catch (AuthenticationException e) {
+            return null;
+        }
+    }
+
+    @Async
+    public Future<UserAuthenticationReply> signin(String username, String password) throws InterruptedException {
+        try {
+            List<QnaRole> roles = doAuthAndGetRoles(username, password);
+            return new AsyncResult<>(new UserAuthenticationReply(jwtTokenProvider.createToken(username, roles)));
+        } catch (AuthenticationException e) {
+            ListenableFuture<UserAuthenticationReply> reply = interserverCommunication.sendUserAuthenticationRequest(new UserAuthenticationRequest(username, password));
+            return reply;
         }
     }
 
