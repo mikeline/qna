@@ -15,6 +15,7 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -71,29 +72,35 @@ public class UserService {
         userRepo.deleteById(id);
     }
 
-    public List<QnaRole> doAuthAndGetRoles(String username, String password) throws AuthenticationException {
-        List<QnaRole> roles = new ArrayList<>();
+    public boolean doAuthAndGetRoles(String username, String password, List<QnaRole> roles) throws AuthenticationException {
         User user = userRepo.findByUsername(username);
         roles.add(user.getRole());
-        authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password, roles));
-        return roles;
+        Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password, roles));
+
+        return auth.isAuthenticated();
     }
 
     public UserAuthenticationReply localAuth(UserAuthenticationRequest req) {
-        try {
-            List<QnaRole> roles = doAuthAndGetRoles(req.getUsername(), req.getPassword());
+        List<QnaRole> roles = new ArrayList<>();
+        if(doAuthAndGetRoles(req.getUsername(), req.getPassword(), roles))
+        {
             return new UserAuthenticationReply(jwtTokenProvider.createToken(req.getUsername(), roles));
-        } catch (AuthenticationException e) {
+        }
+        else
+        {
             return null;
         }
     }
 
     @Async
     public Future<UserAuthenticationReply> signin(String username, String password) throws InterruptedException {
-        try {
-            List<QnaRole> roles = doAuthAndGetRoles(username, password);
+        List<QnaRole> roles = new ArrayList<>();
+        if(doAuthAndGetRoles(username, password, roles))
+        {
             return new AsyncResult<>(new UserAuthenticationReply(jwtTokenProvider.createToken(username, roles)));
-        } catch (AuthenticationException e) {
+        }
+        else
+        {
             ListenableFuture<UserAuthenticationReply> reply = interserverCommunication.sendUserAuthenticationRequest(new UserAuthenticationRequest(username, password));
             return reply;
         }
