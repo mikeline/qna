@@ -13,3 +13,5 @@ hibernate:
 
 schema:
   node1
+mynodename:
+  node1

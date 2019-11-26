@@ -16,7 +16,7 @@ import java.util.*;
 @ToString
 @Entity
 @Data
-@Table(name = "node", schema = "qna")
+@Table(name = "node")
 public class Node {
 
     @Id
@@ -35,6 +35,9 @@ public class Node {
 
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "originalNodeForUser",  cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<User> childUsers = new ArrayList<>();
+
+    @Column(name = "owner_id")
+    private UUID ownerId;
 
 //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "originalNodeForPost", cascade = CascadeType.PERSIST, orphanRemoval = true)
 //    private List<Post> childPosts = new ArrayList<>();

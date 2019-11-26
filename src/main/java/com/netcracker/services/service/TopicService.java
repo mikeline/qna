@@ -1,7 +1,7 @@
 package com.netcracker.services.service;
 
 import com.netcracker.models.Topic;
-import com.netcracker.search.TopicSearch;
+import com.netcracker.search.GeneralSearch;
 import com.netcracker.services.repo.TopicRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ public class TopicService {
 
     private final PostService postService;
 
-    private final TopicSearch topicSearch;
+    private final GeneralSearch generalSearch;
 
     public Topic getOneTopic(UUID id) {
         return topicRepo.getOne(id);
@@ -40,7 +40,4 @@ public class TopicService {
         topicRepo.deleteById(id);
     }
 
-    public List<Topic> searchTopics(String text) {
-        return topicSearch.searchTopics(text);
-    }
 }

@@ -1,7 +1,6 @@
 package com.netcracker.models;
 
 import com.fasterxml.jackson.annotation.*;
-import com.netcracker.utils.EntityIdResolver;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.search.annotations.*;

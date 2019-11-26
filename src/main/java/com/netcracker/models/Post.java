@@ -8,6 +8,8 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import com.netcracker.utils.PostType;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.search.annotations.*;
+import org.hibernate.search.annotations.Index;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -19,6 +21,7 @@ import java.util.*;
 @Data
 @Entity
 @Table(name = "post")
+@Indexed
 public class Post implements Replicable {
 
     @Id
@@ -29,6 +32,8 @@ public class Post implements Replicable {
     )
     @Column(name = "id", updatable = false, nullable = false)
     private UUID postId;
+
+    @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
     private String body;
 
     @Enumerated(EnumType.STRING)

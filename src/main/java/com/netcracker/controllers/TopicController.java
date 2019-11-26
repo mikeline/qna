@@ -76,13 +76,4 @@ public class TopicController {
         return new ResponseEntity<>(res, OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODER') or hasRole('ROLE_CLIENT')")
-    @RequestMapping(value = "/search/{text}", method = GET)
-    @ResponseBody
-    public ResponseEntity<List<Topic>> search(@PathVariable("text") String text) {
-
-        List<Topic> res = topicService.searchTopics(text);
-
-        return new ResponseEntity<>(res, OK);
-    }
 }
