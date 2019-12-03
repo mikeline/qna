@@ -11,11 +11,13 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
+import java.security.Principal;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
@@ -81,5 +83,24 @@ public class PostController {
 
         return res == null ? new ResponseEntity<>(FORBIDDEN) : new ResponseEntity<>(res, CREATED);
     }
+
+//    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODER') or hasRole('ROLE_CLIENT')")
+//    @RequestMapping(value = "/{id}/upvote", method = PATCH)
+//    @ResponseBody
+//    public ResponseEntity upvote() {
+//        return vote(1);
+//    }
+//
+//    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODER') or hasRole('ROLE_CLIENT')")
+//    @RequestMapping(value = "/{id}/downvote", method = PATCH)
+//    @ResponseBody
+//    public ResponseEntity downvote(Authentication auth) {
+//        auth.getName();
+//         new ResponseEntity<>(OK);
+//        return vote(-1);
+//
+//    }
+
+
 
 }

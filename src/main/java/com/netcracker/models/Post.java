@@ -15,7 +15,7 @@ import java.util.*;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @NoArgsConstructor
-@ToString
+//@ToString(exclude = {"ratedUsers"})
 @Data
 @Entity
 @Table(name = "post")
@@ -62,8 +62,14 @@ public class Post implements Replicable {
     @ManyToMany(mappedBy = "posts")
     private Set<Node> nodes = new HashSet<>();
 
-    @ManyToMany(mappedBy = "ratedPosts")
-    private Set<User> ratedUsers = new HashSet<>();
+
+    @OneToMany(
+            mappedBy = "post",
+            cascade = CascadeType.ALL,
+            orphanRemoval = true
+    )
+    private Set<UserPostVote> ratedUsers = new HashSet<>();
+
 
     public Post(String body, PostType postType, User user) {
         this.body = body;

@@ -1,12 +1,13 @@
 package com.netcracker.services.service;
 
-import com.netcracker.models.Post;
-import com.netcracker.models.Topic;
-import com.netcracker.models.User;
+import com.netcracker.models.*;
 import com.netcracker.search.TopicSearch;
 import com.netcracker.services.repo.PostRepo;
+import com.netcracker.services.repo.UserPostVoteRepo;
+import com.netcracker.services.repo.UserRepo;
 import com.netcracker.utils.QnaRole;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
@@ -15,6 +16,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.transaction.Transactional;
 import java.util.Collection;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.FORBIDDEN;
@@ -22,11 +24,14 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 @RequiredArgsConstructor
 @Service
+@Log4j
 public class PostService {
 
     private final UserService userService;
 
     private final PostRepo postRepo;
+    private final UserPostVoteRepo userPostVoteRepo;
+    private final UserRepo userRepo;
 
     private final TopicSearch topicSearch;
 
@@ -90,4 +95,32 @@ public class PostService {
         return FORBIDDEN;
     }
 
+    @Transactional
+    public void updateRating(UUID userId, UUID postId, int vote) {
+        Optional<Post> opPost = postRepo.findById(postId);
+        Optional<User> opUser = userRepo.findById(userId);
+
+        if (opPost.isEmpty() || opUser.isEmpty()) {
+            log.info("quitting");
+            return;
+        }
+
+        Post post = opPost.get();
+        User user = opUser.get();
+//        log.info(post);
+//        log.info(user);
+
+        UserPostVoteId ratingId = new UserPostVoteId(userId, postId);
+        UserPostVote rating = userPostVoteRepo.findById(ratingId).orElse(new UserPostVote(user, post, 0));
+        post.setRating(post.getRating() - rating.getVote() + vote);
+
+        if (vote == 0) {
+            userPostVoteRepo.deleteById(ratingId); // apparently this throws an exception if given id does not exist in the DB
+        } else {
+            rating.setVote(vote);
+            userPostVoteRepo.save(rating);
+        }
+
+        postRepo.save(post);
+    }
 }

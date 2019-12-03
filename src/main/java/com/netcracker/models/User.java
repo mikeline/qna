@@ -12,10 +12,9 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;
 
-import static com.fasterxml.jackson.annotation.JsonInclude.*;
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @NoArgsConstructor
-@ToString
+//@ToString(exclude = "ratedPosts")
 @Data
 @Entity
 @Table(name = "qna_user")
@@ -60,12 +59,13 @@ public class User {
     @ManyToMany(mappedBy = "users")
     private Set<Node> nodes = new HashSet<>();
 
-    @ManyToMany(cascade = { CascadeType.ALL })
-    @JoinTable(
-            name = "user_post_rating",
-            joinColumns = { @JoinColumn(name = "user_id") },
-            inverseJoinColumns = { @JoinColumn(name = "rated_post_id") }
+    @OneToMany(
+            mappedBy = "user",
+            cascade = CascadeType.PERSIST
     )
-    private Set<Post> ratedPosts = new HashSet<>();
+    private Set<UserPostVote> ratedPosts = new HashSet<>();
+
+
+
 
 }
