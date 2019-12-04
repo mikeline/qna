@@ -1,6 +1,7 @@
 package com.netcracker.controllers;
 
 
+import com.netcracker.models.Tag;
 import com.netcracker.models.Topic;
 import com.netcracker.services.repo.TopicRepo;
 import com.netcracker.services.service.TopicService;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import static org.springframework.http.HttpStatus.*;
@@ -84,5 +86,12 @@ public class TopicController {
         List<Topic> res = topicService.searchTopics(text);
 
         return new ResponseEntity<>(res, OK);
+    }
+
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODER') or hasRole('ROLE_CLIENT')")
+    @RequestMapping(value = "/searchTag", method = GET)
+    @ResponseBody
+    public ResponseEntity<List<Topic>> searchTag(@RequestBody Set<Tag> tags) {
+        return new ResponseEntity<>(topicService.searchTags(tags), OK);
     }
 }

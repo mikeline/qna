@@ -9,9 +9,7 @@ import org.hibernate.search.annotations.Index;
 
 import javax.persistence.*;
 import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @NoArgsConstructor
@@ -48,5 +46,9 @@ public class Topic implements Serializable {
     @IndexedEmbedded
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Answer> answers = new ArrayList<>();
+
+    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JoinTable(name = "topic_tags")
+    private Set<Tag> tags = new HashSet<>();
 
 }

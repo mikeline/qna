@@ -1,5 +1,6 @@
 package com.netcracker.services.service;
 
+import com.netcracker.models.Tag;
 import com.netcracker.models.Topic;
 import com.netcracker.search.TopicSearch;
 import com.netcracker.services.repo.TopicRepo;
@@ -7,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Service
@@ -42,5 +44,9 @@ public class TopicService {
 
     public List<Topic> searchTopics(String text) {
         return topicSearch.searchTopics(text);
+    }
+
+    public List<Topic> searchTags(Set<Tag> tags) {
+        return topicRepo.searchTag(tags);
     }
 }
