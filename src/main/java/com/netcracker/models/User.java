@@ -45,7 +45,11 @@ public class User {
     private LocalDateTime createdAt;
 
     @Enumerated(EnumType.STRING)
+    @Column(name = "role", nullable = false, columnDefinition = "varchar default ROLE_CLIENT")
     private QnaRole role;
+
+    @Column(name = "unblock_time")
+    private LocalDateTime unblockTime;
 
     private boolean original;
 

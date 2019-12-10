@@ -34,8 +34,6 @@ public class Topic implements Serializable {
     @Field(index = Index.YES, analyze = Analyze.YES, store = Store.NO)
     private String title;
 
-    private String postIdString;
-
     @IndexedEmbedded
     @OneToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "post_id")

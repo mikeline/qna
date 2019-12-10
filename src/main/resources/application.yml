@@ -15,3 +15,6 @@ schema:
   node1
 mynodename:
   node1
+
+#from_environment: false
+#java_opts: -Djava.security.egd=file:///dev/urandom

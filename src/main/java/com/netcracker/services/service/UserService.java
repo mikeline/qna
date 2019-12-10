@@ -27,11 +27,12 @@ import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 import org.springframework.util.concurrent.SuccessCallback;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.concurrent.Future;
+
+import static org.springframework.http.HttpStatus.*;
 
 
 @RequiredArgsConstructor
@@ -72,37 +73,20 @@ public class UserService {
         userRepo.deleteById(id);
     }
 
-    public boolean doAuthAndGetRoles(String username, String password, List<QnaRole> roles) throws AuthenticationException {
+
+    public String signin(String username, String password) throws InterruptedException {
+        List<QnaRole> roles = new ArrayList<>();
         User user = userRepo.findByUsername(username);
         roles.add(user.getRole());
         Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password, roles));
 
-        return auth.isAuthenticated();
-    }
-
-    public UserAuthenticationReply localAuth(UserAuthenticationRequest req) {
-        List<QnaRole> roles = new ArrayList<>();
-        if(doAuthAndGetRoles(req.getUsername(), req.getPassword(), roles))
+        if(auth.isAuthenticated())
         {
-            return new UserAuthenticationReply(jwtTokenProvider.createToken(req.getUsername(), roles));
+            return jwtTokenProvider.createToken(user.getUsername(), roles);
         }
         else
         {
-            return null;
-        }
-    }
-
-    @Async
-    public Future<UserAuthenticationReply> signin(String username, String password) throws InterruptedException {
-        List<QnaRole> roles = new ArrayList<>();
-        if(doAuthAndGetRoles(username, password, roles))
-        {
-            return new AsyncResult<>(new UserAuthenticationReply(jwtTokenProvider.createToken(username, roles)));
-        }
-        else
-        {
-            ListenableFuture<UserAuthenticationReply> reply = interserverCommunication.sendUserAuthenticationRequest(new UserAuthenticationRequest(username, password));
-            return reply;
+            throw new CustomHttpException("Invalid username/password", HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -149,6 +133,18 @@ public class UserService {
         List<QnaRole> roles = new ArrayList<>();
         roles.add(userRepo.findByUsername(username).getRole());
         return jwtTokenProvider.createToken(username, roles);
+    }
+
+    public HttpStatus banUserById(UUID id, LocalDateTime unblockTime) {
+
+        Optional<User> optionalUser = userRepo.findById(id);
+        User user = optionalUser.isPresent() ? optionalUser.get() : new User();
+
+        user.setUnblockTime(unblockTime);
+
+        userRepo.save(user);
+
+        return NO_CONTENT;
     }
 
 }

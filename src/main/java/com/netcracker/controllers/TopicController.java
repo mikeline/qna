@@ -28,7 +28,6 @@ public class TopicController {
 
     private final TopicService topicService;
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODER') or hasRole('ROLE_CLIENT')")
     @RequestMapping(value = "/{id}", method = GET)
     @ResponseBody
     public ResponseEntity<Topic> get(@PathVariable("id") String id) {
@@ -38,7 +37,6 @@ public class TopicController {
         return res == null ? new ResponseEntity<>(NOT_FOUND) : new ResponseEntity<>(res, OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODER') or hasRole('ROLE_CLIENT')")
     @RequestMapping(value = "/", method = GET)
     @ResponseBody
     public ResponseEntity<Collection<Topic>> getAll() {
@@ -46,7 +44,6 @@ public class TopicController {
         return new ResponseEntity<>(topicService.findAllTopics(), OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODER') or hasRole('ROLE_CLIENT')")
     @RequestMapping(method = POST)
     @ResponseBody
     public ResponseEntity<Topic> create(@RequestBody Topic topic) {
@@ -56,7 +53,6 @@ public class TopicController {
         return new ResponseEntity<>(res, CREATED);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODER')")
     @RequestMapping(value = "/{id}", method = DELETE)
     @ResponseBody
     public ResponseEntity delete(@PathVariable("id") String id) {
@@ -66,7 +62,6 @@ public class TopicController {
         return new ResponseEntity(NO_CONTENT);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODER')")
     @RequestMapping(method = PUT)
     @ResponseBody
     public ResponseEntity<Topic> update(@RequestBody Topic topic) {

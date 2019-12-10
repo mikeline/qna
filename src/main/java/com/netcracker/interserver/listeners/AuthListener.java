@@ -20,11 +20,11 @@ public class AuthListener {
 
     private final UserService userService;
 
-    @RabbitHandler
-    UserAuthenticationReply handleUserAuthRequest(@Payload UserAuthenticationRequest request, Message msg) {
-        log.debug(msg);
-
-        return userService.localAuth(request);
-    }
+//    @RabbitHandler
+//    UserAuthenticationReply handleUserAuthRequest(@Payload UserAuthenticationRequest request, Message msg) {
+//        log.debug(msg);
+//
+//        return userService.localAuth(request);
+//    }
 }
 
