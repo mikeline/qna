@@ -2,7 +2,9 @@ package com.netcracker.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.netcracker.interserver.messages.Replicable;
 import com.netcracker.utils.NodeRole;
+import com.netcracker.utils.ReplicatedEntityListener;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -15,9 +17,10 @@ import java.util.*;
 @AllArgsConstructor
 @ToString
 @Entity
+@EntityListeners(ReplicatedEntityListener.class)
 @Data
-@Table(name = "node", schema = "qna")
-public class Node {
+@Table(name = "node")
+public class Node implements Replicable {
 
     @Id
     @GeneratedValue(generator = "ifnull-uuid")
@@ -26,7 +29,7 @@ public class Node {
             strategy = "com.netcracker.services.IfNullUUIDGenerator"
     )
     @Column(name = "id", updatable = false, nullable = false)
-    private UUID nodeId;
+    private UUID id;
 
     private String name;
 
@@ -62,5 +65,5 @@ public class Node {
 
     @JsonIgnore
     private LocalDateTime lastSeen;
-
+    private UUID ownerId;
 }

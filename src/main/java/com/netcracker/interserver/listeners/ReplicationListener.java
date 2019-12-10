@@ -1,5 +1,6 @@
 package com.netcracker.interserver.listeners;
 
+import com.netcracker.interserver.RabbitConfiguration;
 import com.netcracker.interserver.messages.Replicable;
 import com.netcracker.interserver.messages.Replicate;
 import com.netcracker.models.*;
@@ -20,9 +21,9 @@ import java.util.stream.Collectors;
 @Component
 @Log4j
 @RequiredArgsConstructor
-@RabbitListener(id = ReplicationListener.ID)
+@RabbitListener(queues = RabbitConfiguration.QUEUE_RECEIVE_REPLICATION)
 public class ReplicationListener {
-    public static final String ID = "ReplicationListener";
+//    public static final String ID = "ReplicationListener";
 
     private final AnswerRepo answerRepo;
     private final CommentRepo commentRepo;

@@ -2,10 +2,12 @@ package com.netcracker.interserver;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
-import org.springframework.amqp.core.DirectExchange;
+import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import org.springframework.amqp.core.Binding;
+import org.springframework.amqp.core.BindingBuilder;
 import org.springframework.amqp.core.FanoutExchange;
 import org.springframework.amqp.core.Queue;
-import org.springframework.amqp.core.TopicExchange;
 import org.springframework.amqp.rabbit.AsyncRabbitTemplate;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
@@ -15,27 +17,37 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.amqp.rabbit.listener.RabbitListenerContainerFactory;
 import org.springframework.amqp.support.converter.Jackson2JavaTypeMapper;
 import org.springframework.amqp.support.converter.Jackson2JsonMessageConverter;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
-import org.springframework.context.annotation.Scope;
 
 
 //Some queues are defined and bind in InterserverCommunication.java
 @Configuration
+//@ConfigurationProperties(prefix )
 public class RabbitConfiguration {
-    public static final String RABBIT_ADDRESS = "localhost";
+    @Value("${broker.address}")
+    private String RABBIT_ADDRESS;
 
-    public static final String EXCHANGE_REQUEST_SUMMARY = "qna.exchangeRequestSummary";
-//    public static final String QUEUE_REQUEST_SUMMARY = "qna.queueRequestSummary";
+    @Value("${broker.port}")
+    private int RABBIT_PORT;
 
-//    public static final String EXCHANGE_REPLY_SUMMARY = "qna.exchangeReplySummary";
-//    public static final String QUEUE_REPLY_SUMMARY = "qna.queueReplySummary";
+    @Value("${broker.vhost}")
+    private String RABBIT_VHOST;
 
-    public static final String EXCHANGE_PUBLISH_REPLICATION = "qna.exchangePublishReplication";
-    public static final String EXCHANGE_SEARCH_QUERIES = "qna.search_queries";
+    @Value("${broker.username}")
+    private String RABBIT_USERNAME;
 
-    public static final String EXCHANGE_USER_AUTHENTICATION = "qna.userAuthenticationExchange";
+    @Value("${broker.password}")
+    private String RABBIT_PASSWORD;
+
+    public static final String EXCHANGE_USER_AUTHENTICATION = "user auth"; //todo: make authentication
+    public static final String EXCHANGE_SEND_REPLICATION = "EXCHANGE_SEND_REPLICATION";
+    public static final String EXCHANGE_RECEIVE_REPLICATION = "EXCHANGE_RECEIVE_REPLICATION";
+
+    public static final String QUEUE_RECEIVE_REPLICATION = "QUEUE_RECEIVE_REPLICATION";
+    public static final String QUEUE_SEARCH = "QUEUE_SEARCH";
+
 
     @Bean
     public RabbitAdmin rabbitAdmin() {
@@ -57,7 +69,13 @@ public class RabbitConfiguration {
 
     @Bean
     public ConnectionFactory connectionFactory() {
-        return new CachingConnectionFactory(RABBIT_ADDRESS);
+        CachingConnectionFactory connectionFactory = new CachingConnectionFactory(RABBIT_ADDRESS);
+        connectionFactory.setVirtualHost(RABBIT_VHOST);
+        connectionFactory.setPort(RABBIT_PORT);
+        connectionFactory.setUsername(RABBIT_USERNAME);
+        connectionFactory.setPassword(RABBIT_PASSWORD);
+
+        return connectionFactory;
     }
 
 
@@ -73,6 +91,8 @@ public class RabbitConfiguration {
     public ObjectMapper objectMapper() {
         ObjectMapper objectMapper = new ObjectMapper();
         objectMapper.disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+        objectMapper.registerModule(new Jdk8Module());
+        objectMapper.registerModule(new JavaTimeModule());
         return objectMapper;
     }
 
@@ -80,7 +100,7 @@ public class RabbitConfiguration {
     public Jackson2JsonMessageConverter jsonMessageConverter() {
         Jackson2JsonMessageConverter jsonConverter = new Jackson2JsonMessageConverter(objectMapper(), "*");
 //        DefaultClassMapper classMapper = new DefaultClassMapper();
-//        classMapper.setTrustedPackages("*"); // todo: security?
+//        classMapper.setTrustedPackages("*");
 //        jsonConverter.setClassMapper(classMapper);
         jsonConverter.setTypePrecedence(Jackson2JavaTypeMapper.TypePrecedence.TYPE_ID);
         return jsonConverter;
@@ -89,36 +109,33 @@ public class RabbitConfiguration {
 
 
     // exchanges
-
-    @Bean(EXCHANGE_USER_AUTHENTICATION)
-    public FanoutExchange exchangeUserAuthentication() { return new FanoutExchange(EXCHANGE_USER_AUTHENTICATION); }
-
-    @Bean(EXCHANGE_REQUEST_SUMMARY)
-    public FanoutExchange exchangeRequestSummary() {
-        return new FanoutExchange(EXCHANGE_REQUEST_SUMMARY);
+    @Bean(EXCHANGE_SEND_REPLICATION)
+    public FanoutExchange exchangeSendReplication() {
+        return new FanoutExchange(EXCHANGE_SEND_REPLICATION);
     }
 
-//    @Bean(name = EXCHANGE_REPLY_SUMMARY)
-//    public FanoutExchange exchangeReplySummary() {
-//        return new FanoutExchange(EXCHANGE_REPLY_SUMMARY);
+    @Bean(EXCHANGE_RECEIVE_REPLICATION)
+    public FanoutExchange exchangeReceiveReplication() {
+        return new FanoutExchange(EXCHANGE_RECEIVE_REPLICATION);
+    }
+
+
+    // queues
+//    @Bean
+//    @Scope("prototype")
+//    @Primary
+//    public Queue queue() {
+//        return rabbitAdmin().declareQueue();
 //    }
 
     @Bean
-    public TopicExchange exchangePublishReplication() {
-        return new TopicExchange(EXCHANGE_PUBLISH_REPLICATION);
+    public Queue queueReceiveReplication() {
+        return new Queue(QUEUE_RECEIVE_REPLICATION);
     }
 
     @Bean
-    public DirectExchange exchangeSearchQueries() {
-        return new DirectExchange(EXCHANGE_SEARCH_QUERIES);
-    }
-
-    // queues
-    @Bean
-    @Scope("prototype")
-    @Primary
-    public Queue queue() {
-        return rabbitAdmin().declareQueue();
+    public Queue queueSearch() {
+        return new Queue(QUEUE_SEARCH);
     }
 //
 //    @Bean
@@ -133,4 +150,10 @@ public class RabbitConfiguration {
 //                .bind(queueRequestSummary())
 //                .to(exchangeRequestSummary());
 //    }
+
+    @Bean
+    public Binding bindReceiveReplication() {
+        return BindingBuilder.bind(queueReceiveReplication()).to(exchangeReceiveReplication());
+    }
+
 }

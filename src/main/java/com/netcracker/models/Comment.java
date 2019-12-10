@@ -1,6 +1,8 @@
 package com.netcracker.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.netcracker.interserver.messages.Replicable;
+import com.netcracker.utils.ReplicatedEntityListener;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;
 
@@ -12,17 +14,18 @@ import java.util.UUID;
 @ToString
 @Data
 @Entity
+@EntityListeners(ReplicatedEntityListener.class)
 @Table(name = "comment")
-public class Comment {
+public class Comment implements Replicable {
 
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(generator = "ifnull-uuid")
     @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
+            name = "ifnull-uuid",
+            strategy = "com.netcracker.services.IfNullUUIDGenerator"
     )
     @Column(name = "id", updatable = false, nullable = false)
-    private UUID commentId;
+    private UUID id;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
@@ -31,5 +34,7 @@ public class Comment {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "commented_post_id")
     private Post commentedPost;
+
+    private UUID ownerId;
 
 }

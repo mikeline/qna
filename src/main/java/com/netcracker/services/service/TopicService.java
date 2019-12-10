@@ -30,7 +30,7 @@ public class TopicService {
     }
 
     public Topic createTopic(Topic topic) {
-        topic.setTopicPost(postService.getPostById(UUID.fromString(topic.getPostIdString())));
+//        topic.setTopicPost(postService.getPostById(UUID.fromString(topic.getPostIdString())));
         return topicRepo.save(topic);
     }
 

@@ -10,5 +10,6 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Replicate {
+    private ReplicationOperation replicationOperation;
     private List<? extends Replicable> data; //станет ли ломбок копировать список?
 }

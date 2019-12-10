@@ -1,15 +1,15 @@
 package com.netcracker.services.service;
 
-import javax.servlet.http.HttpServletRequest;
-
+import com.netcracker.exception.CustomHttpException;
 import com.netcracker.interserver.InterserverCommunication;
 import com.netcracker.interserver.messages.UserAuthenticationReply;
 import com.netcracker.interserver.messages.UserAuthenticationRequest;
 import com.netcracker.models.User;
+import com.netcracker.security.JwtTokenProvider;
 import com.netcracker.services.repo.UserRepo;
 import com.netcracker.utils.QnaRole;
-import com.netcracker.exception.CustomHttpException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.AsyncResult;
@@ -20,13 +20,9 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
-
-import com.netcracker.security.JwtTokenProvider;
 import org.springframework.util.concurrent.ListenableFuture;
-import org.springframework.util.concurrent.ListenableFutureCallback;
-import org.springframework.util.concurrent.SuccessCallback;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -36,6 +32,7 @@ import java.util.concurrent.Future;
 
 @RequiredArgsConstructor
 @Service
+@Log4j
 public class UserService {
 
     private final UserRepo userRepo;
@@ -74,6 +71,10 @@ public class UserService {
 
     public boolean doAuthAndGetRoles(String username, String password, List<QnaRole> roles) throws AuthenticationException {
         User user = userRepo.findByUsername(username);
+        if (user == null) {
+            return false;
+        }
+
         roles.add(user.getRole());
         Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password, roles));
 
@@ -94,13 +95,16 @@ public class UserService {
 
     @Async
     public Future<UserAuthenticationReply> signin(String username, String password) throws InterruptedException {
+        log.debug("kjasdfkjl;dafs");
         List<QnaRole> roles = new ArrayList<>();
         if(doAuthAndGetRoles(username, password, roles))
         {
+            log.debug("true");
             return new AsyncResult<>(new UserAuthenticationReply(jwtTokenProvider.createToken(username, roles)));
         }
         else
         {
+            log.debug("false");
             ListenableFuture<UserAuthenticationReply> reply = interserverCommunication.sendUserAuthenticationRequest(new UserAuthenticationRequest(username, password));
             return reply;
         }

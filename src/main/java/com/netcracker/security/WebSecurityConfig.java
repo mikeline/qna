@@ -36,7 +36,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
         // Entry points
-        http.authorizeRequests()//
+        http.authorizeRequests()
+//                .anyRequest().permitAll();// for testing only: delete me
                 .antMatchers("/user/login").permitAll()//
                 .antMatchers("/user/signup").permitAll()//
                 .antMatchers("/h2-console/**/**").permitAll()
@@ -62,7 +63,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/configuration/**")//
                 .antMatchers("/webjars/**")//
                 .antMatchers("/public")
-
+                .antMatchers("/**")
                 // Un-secure H2 Database (for testing purposes, H2 console shouldn't be unprotected in production)
                 .and()
                 .ignoring()

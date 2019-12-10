@@ -34,7 +34,7 @@ public class UserPostVote {
     public UserPostVote(User user, Post post, int vote) {
         this.post = post;
         this.user = user;
-        this.id = new UserPostVoteId(post.getPostId(), user.getUserId());
+        this.id = new UserPostVoteId(post.getId(), user.getId());
         this.vote = vote;
     }
 }

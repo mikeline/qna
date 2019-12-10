@@ -69,9 +69,9 @@ public class NodeService {
 //    }
 
     public Node saveReplication(Node node) {
-        if (node.getOwnerId().equals(getSelfUUID())) {
-            return null;
-        }
+//        if (node.getOwnerId().equals(getSelfUUID())) {
+//            return null;
+//        }
 
         return nodeRepo.save(node);
     }
@@ -79,7 +79,7 @@ public class NodeService {
     public List<Node> saveAllReplication(Iterable<Node> nodes) {
         List<Node> savedNodes = StreamSupport
                 .stream(nodes.spliterator(), false)
-                .filter(node -> !node.getOwnerId().equals(getSelfUUID())) // what to do if someone tries to send me nodes with my ownerid ???
+//                .filter(node -> !node.getOwnerId().equals(getSelfUUID())) // what to do if someone tries to send me nodes with my ownerid ???
                 .collect(Collectors.toList());
 
         return nodeRepo.saveAll(savedNodes);
@@ -88,7 +88,7 @@ public class NodeService {
 
 
     private Node saveNodeWithRole(Node node, NodeRole role) {
-        Optional<Node> savedNode = nodeRepo.findById(node.getNodeId());
+        Optional<Node> savedNode = nodeRepo.findById(node.getId());
         if (savedNode.isPresent() && savedNode.get().getNodeRole() != NodeRole.NONE) {
             return null;
         }
@@ -112,22 +112,22 @@ public class NodeService {
         return true;
     }
 
-    public boolean savePublisher(Node publisher) {
-        Node savedNode = saveNodeWithRole(publisher, NodeRole.PUBLISHER);
-        if (savedNode != null) {
-            interserverCommunication.createPublisherBinding(savedNode.getNodeId());
-            return true;
-        }
-
-        return false;
-    }
+//    public boolean savePublisher(Node publisher) {
+//        Node savedNode = saveNodeWithRole(publisher, NodeRole.PUBLISHER);
+//        if (savedNode != null) {
+//            interserverCommunication.createPublisherBinding(savedNode.getNodeId());
+//            return true;
+//        }
+//
+//        return false;
+//    }
 
     //todo: search for new publishers
-    public void deletePublisher(UUID publisherId) {
-        if (removeNodeWithRole(publisherId, NodeRole.PUBLISHER)) {
-            interserverCommunication.deletePublisherBinding(publisherId);
-        }
-    }
+//    public void deletePublisher(UUID publisherId) {
+//        if (removeNodeWithRole(publisherId, NodeRole.PUBLISHER)) {
+//            interserverCommunication.deletePublisherBinding(publisherId);
+//        }
+//    }
 
     //todo: stop listening to subscribe messages
     public boolean saveSubscriber(Node subscriber) {
@@ -141,7 +141,7 @@ public class NodeService {
 
 
     public UUID getSelfUUID() {
-        return self.getNodeId();
+        return self.getId();
     }
 
     public List<Node> getSubscribers() {

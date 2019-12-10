@@ -3,6 +3,8 @@ package com.netcracker.models;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.netcracker.interserver.messages.Replicable;
+import com.netcracker.utils.ReplicatedEntityListener;
 import lombok.*;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
@@ -17,17 +19,18 @@ import java.util.*;
 //@ToString(exclude = "ratedPosts")
 @Data
 @Entity
-@Table(name = "qna_user")
-public class User {
+@EntityListeners(ReplicatedEntityListener.class)
+@Table(name = "user")
+public class User implements Replicable {
 
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(generator = "ifnull-uuid")
     @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
+            name = "ifnull-uuid",
+            strategy = "com.netcracker.services.IfNullUUIDGenerator"
     )
     @Column(name = "id", updatable = false, nullable = false)
-    private UUID userId;
+    private UUID id;
 
     @Column(name = "full_name")
     private String fullName;
@@ -59,6 +62,7 @@ public class User {
     @ManyToMany(mappedBy = "users")
     private Set<Node> nodes = new HashSet<>();
 
+    @JsonIgnore
     @OneToMany(
             mappedBy = "user",
             cascade = CascadeType.PERSIST
@@ -66,6 +70,6 @@ public class User {
     private Set<UserPostVote> ratedPosts = new HashSet<>();
 
 
-
+    private UUID ownerId;
 
 }

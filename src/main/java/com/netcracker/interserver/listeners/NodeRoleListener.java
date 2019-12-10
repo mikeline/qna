@@ -20,72 +20,72 @@ import org.springframework.stereotype.Component;
 @Component
 @Log4j
 @RequiredArgsConstructor
-@RabbitListener(id = NodeRoleListener.ID)
+//@RabbitListener(id = NodeRoleListener.ID)
 public class NodeRoleListener {
-    public static final String ID = "NodeRoleListener";
-
-    private final NodeService nodeService;
-    private final InterserverCommunication interserverCommunication;
-    private final RabbitTemplate template;
-
-
-    @RabbitHandler
-    public void handleSummaryRequest(@Payload SummaryRequest request, @Header("sender") String senderUUID, Message msg) {
-        log.debug("got a summary request");
-        log.debug(msg);
-        if (senderUUID.equals(String.valueOf(nodeService.getSelfUUID()))) {
-            log.debug("got my own message");
-            return;
-        }
-
-        if (nodeService.getSubscribers().size() >= 3) {
-            return;
-        }
-
-        sendReply(new Summary(nodeService.getSelf()), msg);
-    }
-
-    @RabbitHandler
-    public void handleSummaryReply(@Payload Summary summary, Message msg) {
-        log.debug(msg);
-
-        if (nodeService.getPublishers().size() >= 3) {
-            return;
-        }
-
-        sendReply(new SubscribeRequest(nodeService.getSelf(), SubStatus.SUBSCRIBE), msg);
-    }
-
-    @RabbitHandler
-    public void handleSubscribe(@Payload SubscribeRequest subscribe, Message msg) {
-        log.debug(msg);
-        if (subscribe.getStatus() == SubStatus.UNSUBSCRIBE) {
-            nodeService.deleteSubscriber(subscribe.getNode().getNodeId());
-        }
-        if (nodeService.getSubscribers().size() >= 3) {
-            return;
-        }
-
-        boolean subscribed = nodeService.saveSubscriber(subscribe.getNode());
-        sendReply(new SubscribeReply (subscribed, subscribed ? nodeService.getSelf() : null), msg);
-    }
-
-    @RabbitHandler
-    public void handleSubscribeReply(@Payload SubscribeReply reply, Message msg) {
-        log.debug(msg);
-        if (reply.isSubscribed()) {
-            nodeService.savePublisher(reply.getNode());
-        }
-    }
-
-    @RabbitHandler(isDefault = true)
-    public void defaultHandler(@Payload Object obj, Message msg) {
-        log.info(msg);
-    }
-
-
-    private void sendReply(Object o, Message msg) {
-        log.debug(msg.getHeaders());
-        template.convertAndSend("", msg.getHeaders().get("amqp_replyTo").toString(), o); //fixme
-    }
+//    public static final String ID = "NodeRoleListener";
+//
+//    private final NodeService nodeService;
+//    private final InterserverCommunication interserverCommunication;
+//    private final RabbitTemplate template;
+//
+//
+//    @RabbitHandler
+//    public void handleSummaryRequest(@Payload SummaryRequest request, @Header("sender") String senderUUID, Message msg) {
+//        log.debug("got a summary request");
+//        log.debug(msg);
+//        if (senderUUID.equals(String.valueOf(nodeService.getSelfUUID()))) {
+//            log.debug("got my own message");
+//            return;
+//        }
+//
+//        if (nodeService.getSubscribers().size() >= 3) {
+//            return;
+//        }
+//
+//        sendReply(new Summary(nodeService.getSelf()), msg);
+//    }
+//
+//    @RabbitHandler
+//    public void handleSummaryReply(@Payload Summary summary, Message msg) {
+//        log.debug(msg);
+//
+//        if (nodeService.getPublishers().size() >= 3) {
+//            return;
+//        }
+//
+//        sendReply(new SubscribeRequest(nodeService.getSelf(), SubStatus.SUBSCRIBE), msg);
+//    }
+//
+//    @RabbitHandler
+//    public void handleSubscribe(@Payload SubscribeRequest subscribe, Message msg) {
+//        log.debug(msg);
+//        if (subscribe.getStatus() == SubStatus.UNSUBSCRIBE) {
+//            nodeService.deleteSubscriber(subscribe.getNode().getNodeId());
+//        }
+//        if (nodeService.getSubscribers().size() >= 3) {
+//            return;
+//        }
+//
+//        boolean subscribed = nodeService.saveSubscriber(subscribe.getNode());
+//        sendReply(new SubscribeReply (subscribed, subscribed ? nodeService.getSelf() : null), msg);
+//    }
+//
+//    @RabbitHandler
+//    public void handleSubscribeReply(@Payload SubscribeReply reply, Message msg) {
+//        log.debug(msg);
+//        if (reply.isSubscribed()) {
+//            nodeService.savePublisher(reply.getNode());
+//        }
+//    }
+//
+//    @RabbitHandler(isDefault = true)
+//    public void defaultHandler(@Payload Object obj, Message msg) {
+//        log.info(msg);
+//    }
+//
+//
+//    private void sendReply(Object o, Message msg) {
+//        log.debug(msg.getHeaders());
+//        template.convertAndSend("", msg.getHeaders().get("amqp_replyTo").toString(), o); //fixme
+//    }
 }

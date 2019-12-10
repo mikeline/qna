@@ -22,13 +22,14 @@ import java.util.*;
 public class Post implements Replicable {
 
     @Id
-    @GeneratedValue(generator = "UUID")
+    @GeneratedValue(generator = "ifnull-uuid")
     @GenericGenerator(
-            name = "UUID",
-            strategy = "org.hibernate.id.UUIDGenerator"
+            name = "ifnull-uuid",
+            strategy = "com.netcracker.services.IfNullUUIDGenerator"
     )
     @Column(name = "id", updatable = false, nullable = false)
-    private UUID postId;
+    private UUID id;
+
     private String body;
 
     @Enumerated(EnumType.STRING)
@@ -44,12 +45,6 @@ public class Post implements Replicable {
     @UpdateTimestamp
     @Column(name = "date_updated")
     private LocalDateTime dateUpdated;
-
-    private boolean original;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "owning_node_id")
-    private Node originalNodeForPost;
 
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
@@ -70,13 +65,13 @@ public class Post implements Replicable {
     )
     private Set<UserPostVote> ratedUsers = new HashSet<>();
 
+    private UUID ownerId;
 
     public Post(String body, PostType postType, User user) {
         this.body = body;
         this.rating = 0;
         this.dateCreated = LocalDateTime.now();
         this.dateUpdated = LocalDateTime.now();
-        this.original = true;
         this.user = user;
         this.postType = postType;
     }

@@ -19,4 +19,6 @@ import java.util.UUID;
 public interface Replicable {
 //    UUID getUUID();
 //    UUID getOwnerUUID();
+    UUID getId();
+    UUID getOwnerId();
 }
