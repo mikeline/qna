@@ -42,9 +42,10 @@ public class InterserverCommunication {
 
     private final RabbitTemplate template;
     private final AsyncRabbitTemplate asyncTemplate;
-//    private final RabbitAdmin admin;
+    private final RabbitAdmin admin;
 //    private final RabbitListenerEndpointRegistry registry;
 
+    private final TopicExchange exchangeSearch;
 //    private final TopicExchange replicationExchange;
 //    private final DirectExchange searchExchange;
 
@@ -52,7 +53,7 @@ public class InterserverCommunication {
 //    private final FanoutExchange userAuthenticationExchange;
 //
 //    private final Queue replicationQueue;
-//    private final Queue searchQueue;
+    private final Queue queueSearchResult;
 //    private final Queue nodeRoleQueue;
 //    private final Queue userAuthenticationQueue;
 
@@ -65,14 +66,15 @@ public class InterserverCommunication {
 //                                    PostRepo postRepo,
                                     RabbitTemplate template,
                                     AsyncRabbitTemplate asyncTemplate,
-//                                    RabbitAdmin admin,
+                                    RabbitAdmin admin,
 //                                    RabbitListenerEndpointRegistry registry,
+                                    @Qualifier(EXCHANGE_SEARCH) TopicExchange exchangeSearch,
 //                                    TopicExchange replicationExchange,
 //                                    DirectExchange searchExchange,
 //                                    @Qualifier(EXCHANGE_REQUEST_SUMMARY) FanoutExchange summaryRequestExchange,
 //                                    @Qualifier(EXCHANGE_USER_AUTHENTICATION) FanoutExchange userAuthenticationExchange,
 //                                    Queue replicationQueue,
-//                                    Queue searchQueue,
+                                    @Qualifier(QUEUE_SEARCH_RESULT) Queue queueSearchResult,
 //                                    Queue nodeRoleQueue,
 //                                    Queue userAuthenticationQueue,
                                     @Value("${mynodename}") String mynodename) {
@@ -80,14 +82,15 @@ public class InterserverCommunication {
 //        this.postRepo = postRepo;
         this.template = template;
         this.asyncTemplate = asyncTemplate;
-//        this.admin = admin;
+        this.admin = admin;
 //        this.registry = registry;
+        this.exchangeSearch = exchangeSearch;
 //        this.replicationExchange = replicationExchange;
 //        this.searchExchange = searchExchange;
 //        this.summaryRequestExchange = summaryRequestExchange;
 //        this.userAuthenticationExchange = userAuthenticationExchange;
 //        this.replicationQueue = replicationQueue;
-//        this.searchQueue = searchQueue;
+        this.queueSearchResult = queueSearchResult;
 //        this.nodeRoleQueue = nodeRoleQueue;
 //        this.userAuthenticationQueue = userAuthenticationQueue;
         this.mynodename = mynodename;
@@ -107,33 +110,34 @@ public class InterserverCommunication {
     public void handleContextRefreshedEvent(ContextRefreshedEvent contextRefreshedEvent) {
         log.debug("context refreshed");
         log.debug(contextRefreshedEvent);
-
-//        configureRabbit();
+        bindRabbitQueues();
+        configureRabbit();
 //        requestSummaries();
     }
 
-//    private void bindRabbitQueues() {
+    private void bindRabbitQueues() {
+        admin.declareBinding(BindingBuilder.bind(queueSearchResult).to(exchangeSearch).with(nodeService.getSelfUUID().toString()));
 //        admin.declareBinding(BindingBuilder.bind(nodeRoleQueue).to(summaryRequestExchange));
 //        admin.declareBinding(BindingBuilder.bind(userAuthenticationQueue).to(userAuthenticationExchange));
-//    }
+    }
 
     // some configs are defined in RabbitConfiguration.java
-//    private void configureRabbit() {
-//        log.debug("configuring rabbit");
-//        template.addBeforePublishPostProcessors(
-//                message -> {
+    private void configureRabbit() {
+        log.debug("configuring rabbit");
+        template.addBeforePublishPostProcessors(
+                message -> {
 //                    message.getMessageProperties().setReplyTo(nodeRoleQueue.getName());
-//                    message.getMessageProperties().getHeaders().put("sender", nodeService.getSelfUUID());
-//                    return message;
-//                }
-//        );
+                    message.getMessageProperties().getHeaders().put("sender", nodeService.getSelfUUID());
+                    return message;
+                }
+        );
 //
 //        log.debug(registry);
 //
 //        register(NodeRoleListener.ID, nodeRoleQueue);
 //        register(ReplicationListener.ID, replicationQueue);
 //        register(AuthListener.ID, userAuthenticationQueue);
-//    }
+    }
 
 //    private void register(String containerID, Queue queue) {
 //        ((SimpleMessageListenerContainer) registry.getListenerContainer(containerID)).addQueues(queue);
@@ -180,6 +184,6 @@ public class InterserverCommunication {
     public void replicate(Replicable obj, ReplicationOperation operation) {
         List<Replicable> payload = new ArrayList<>();
         payload.add(obj);
-        template.convertAndSend(EXCHANGE_SEND_REPLICATION, "", new Replicate(operation, payload));
+        template.convertAndSend(EXCHANGE_REPLICATION, nodeService.getSelfUUID().toString(), new Replicate(operation, payload));
     }
 }

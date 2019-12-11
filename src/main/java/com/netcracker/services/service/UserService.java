@@ -2,8 +2,6 @@ package com.netcracker.services.service;
 
 import com.netcracker.exception.CustomHttpException;
 import com.netcracker.interserver.InterserverCommunication;
-import com.netcracker.interserver.messages.UserAuthenticationReply;
-import com.netcracker.interserver.messages.UserAuthenticationRequest;
 import com.netcracker.models.User;
 import com.netcracker.security.JwtTokenProvider;
 import com.netcracker.services.repo.UserRepo;
@@ -11,23 +9,18 @@ import com.netcracker.utils.QnaRole;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
 import org.springframework.http.HttpStatus;
-import org.springframework.scheduling.annotation.Async;
-import org.springframework.scheduling.annotation.AsyncResult;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.util.concurrent.ListenableFuture;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.UUID;
-import java.util.concurrent.Future;
+import java.time.LocalDateTime;
+import java.util.*;
+
+import static org.springframework.http.HttpStatus.NO_CONTENT;
 
 
 @RequiredArgsConstructor
@@ -69,44 +62,20 @@ public class UserService {
         userRepo.deleteById(id);
     }
 
-    public boolean doAuthAndGetRoles(String username, String password, List<QnaRole> roles) throws AuthenticationException {
-        User user = userRepo.findByUsername(username);
-        if (user == null) {
-            return false;
-        }
 
+    public String signin(String username, String password) throws InterruptedException {
+        List<QnaRole> roles = new ArrayList<>();
+        User user = userRepo.findByUsername(username);
         roles.add(user.getRole());
         Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(username, password, roles));
 
-        return auth.isAuthenticated();
-    }
-
-    public UserAuthenticationReply localAuth(UserAuthenticationRequest req) {
-        List<QnaRole> roles = new ArrayList<>();
-        if(doAuthAndGetRoles(req.getUsername(), req.getPassword(), roles))
+        if(auth.isAuthenticated())
         {
-            return new UserAuthenticationReply(jwtTokenProvider.createToken(req.getUsername(), roles));
+            return jwtTokenProvider.createToken(user.getUsername(), roles);
         }
         else
         {
-            return null;
-        }
-    }
-
-    @Async
-    public Future<UserAuthenticationReply> signin(String username, String password) throws InterruptedException {
-        log.debug("kjasdfkjl;dafs");
-        List<QnaRole> roles = new ArrayList<>();
-        if(doAuthAndGetRoles(username, password, roles))
-        {
-            log.debug("true");
-            return new AsyncResult<>(new UserAuthenticationReply(jwtTokenProvider.createToken(username, roles)));
-        }
-        else
-        {
-            log.debug("false");
-            ListenableFuture<UserAuthenticationReply> reply = interserverCommunication.sendUserAuthenticationRequest(new UserAuthenticationRequest(username, password));
-            return reply;
+            throw new CustomHttpException("Invalid username/password", HttpStatus.UNPROCESSABLE_ENTITY);
         }
     }
 
@@ -153,6 +122,18 @@ public class UserService {
         List<QnaRole> roles = new ArrayList<>();
         roles.add(userRepo.findByUsername(username).getRole());
         return jwtTokenProvider.createToken(username, roles);
+    }
+
+    public HttpStatus banUserById(UUID id, LocalDateTime unblockTime) {
+
+        Optional<User> optionalUser = userRepo.findById(id);
+        User user = optionalUser.isPresent() ? optionalUser.get() : new User();
+
+        user.setUnblockTime(unblockTime);
+
+        userRepo.save(user);
+
+        return NO_CONTENT;
     }
 
 }

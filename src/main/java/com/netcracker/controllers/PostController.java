@@ -36,7 +36,6 @@ public class PostController {
 
     private final PostRepo postRepo;
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODER') or hasRole('ROLE_CLIENT')")
     @RequestMapping(value = "/{id}", method = GET)
     @ResponseBody
     public ResponseEntity<Post> get(@PathVariable("id") String id) {
@@ -46,7 +45,6 @@ public class PostController {
         return res == null ? new ResponseEntity<>(NOT_FOUND) : new ResponseEntity<>(res, OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODER') or hasRole('ROLE_CLIENT')")
     @RequestMapping(value = "/", method = GET)
     @ResponseBody
     public ResponseEntity<Collection<Post>> getAll() {
@@ -54,7 +52,6 @@ public class PostController {
         return new ResponseEntity<>(postService.getAllPosts(), OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODER') or hasRole('ROLE_CLIENT')")
     @RequestMapping(method = POST)
     @ResponseBody
     public ResponseEntity<Post> create(@RequestBody Post post, HttpServletRequest req) {
@@ -64,7 +61,6 @@ public class PostController {
         return new ResponseEntity<>(res, CREATED);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODER') or hasRole('ROLE_CLIENT')")
     @RequestMapping(value = "/{id}", method = DELETE)
     @ResponseBody
     public ResponseEntity delete(@PathVariable("id") String id, HttpServletRequest req) {
@@ -74,7 +70,6 @@ public class PostController {
         return new ResponseEntity<>(status);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODER') or hasRole('ROLE_CLIENT')")
     @RequestMapping(method = PUT)
     @ResponseBody
     public ResponseEntity<Post> update(@RequestBody Post post, HttpServletRequest req) {

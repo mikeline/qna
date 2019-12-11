@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jdk8.Jdk8Module;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import org.springframework.amqp.core.Binding;
-import org.springframework.amqp.core.BindingBuilder;
-import org.springframework.amqp.core.FanoutExchange;
-import org.springframework.amqp.core.Queue;
+import org.springframework.amqp.core.*;
 import org.springframework.amqp.rabbit.AsyncRabbitTemplate;
 import org.springframework.amqp.rabbit.config.SimpleRabbitListenerContainerFactory;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
@@ -42,11 +39,15 @@ public class RabbitConfiguration {
     private String RABBIT_PASSWORD;
 
     public static final String EXCHANGE_USER_AUTHENTICATION = "user auth"; //todo: make authentication
-    public static final String EXCHANGE_SEND_REPLICATION = "EXCHANGE_SEND_REPLICATION";
-    public static final String EXCHANGE_RECEIVE_REPLICATION = "EXCHANGE_RECEIVE_REPLICATION";
+//    public static final String EXCHANGE_SEND_REPLICATION = "EXCHANGE_SEND_REPLICATION"; // upstream for EXCHANGE_REPLICATION
+    public static final String EXCHANGE_REPLICATION = "EXCHANGE_REPLICATION"; // federated; connects to EXCHANGE_REPLICATION
+    public static final String EXCHANGE_SEARCH = "EXCHANGE_SEARCH";
+
 
     public static final String QUEUE_RECEIVE_REPLICATION = "QUEUE_RECEIVE_REPLICATION";
-    public static final String QUEUE_SEARCH = "QUEUE_SEARCH";
+    public static final String QUEUE_SEARCH = "QUEUE_SEARCH"; // federated
+    public static final String QUEUE_SEARCH_QUERY = "QUEUE_SEARCH_QUERY";
+    public static final String QUEUE_SEARCH_RESULT = "QUEUE_SEARCH_RESULT";
 
 
     @Bean
@@ -109,14 +110,19 @@ public class RabbitConfiguration {
 
 
     // exchanges
-    @Bean(EXCHANGE_SEND_REPLICATION)
-    public FanoutExchange exchangeSendReplication() {
-        return new FanoutExchange(EXCHANGE_SEND_REPLICATION);
+//    @Bean(EXCHANGE_SEND_REPLICATION)
+//    public FanoutExchange exchangeSendReplication() {
+//        return new FanoutExchange(EXCHANGE_SEND_REPLICATION);
+//    }
+
+    @Bean(EXCHANGE_REPLICATION)
+    public TopicExchange exchangeReceiveReplication() {
+        return new TopicExchange(EXCHANGE_REPLICATION);
     }
 
-    @Bean(EXCHANGE_RECEIVE_REPLICATION)
-    public FanoutExchange exchangeReceiveReplication() {
-        return new FanoutExchange(EXCHANGE_RECEIVE_REPLICATION);
+    @Bean(EXCHANGE_SEARCH)
+    public TopicExchange exchangeSearch() {
+        return new TopicExchange(EXCHANGE_SEARCH);
     }
 
 
@@ -137,6 +143,16 @@ public class RabbitConfiguration {
     public Queue queueSearch() {
         return new Queue(QUEUE_SEARCH);
     }
+
+    @Bean
+    public Queue queueSearchQuery() {
+        return new Queue(QUEUE_SEARCH_QUERY);
+    }
+
+    @Bean(QUEUE_SEARCH_RESULT)
+    public Queue queueSearchResult() {
+        return new Queue(QUEUE_SEARCH_RESULT);
+    }
 //
 //    @Bean
 //    public Queue queueReplySummary() {
@@ -151,9 +167,9 @@ public class RabbitConfiguration {
 //                .to(exchangeRequestSummary());
 //    }
 
-    @Bean
-    public Binding bindReceiveReplication() {
-        return BindingBuilder.bind(queueReceiveReplication()).to(exchangeReceiveReplication());
-    }
+//    @Bean
+//    public Binding bindReceiveReplication() {
+//        return BindingBuilder.bind(queueReceiveReplication()).to(exchangeReceiveReplication());
+//    }
 
 }

@@ -92,9 +92,12 @@ public class JwtTokenProvider {
     public boolean validateToken(String token) {
         try {
             Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+            if(!myUserDetails.loadUserByUsername(getUsername(token)).isAccountNonLocked()) {
+                throw new JwtException("User is banned");
+            }
             return true;
         } catch (JwtException | IllegalArgumentException e) {
-            throw new CustomHttpException("Expired or invalid JWT token", HttpStatus.INTERNAL_SERVER_ERROR);
+            throw new CustomHttpException(e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 

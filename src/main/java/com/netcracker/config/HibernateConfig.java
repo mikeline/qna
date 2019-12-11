@@ -1,6 +1,8 @@
 package com.netcracker.config;
 import com.netcracker.interserver.RabbitConfiguration;
 import com.netcracker.security.WebSecurityConfig;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -16,13 +18,20 @@ import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.web.servlet.View;
+import org.springframework.web.servlet.ViewResolver;
+import org.springframework.web.servlet.view.BeanNameViewResolver;
+import org.springframework.web.servlet.view.json.MappingJackson2JsonView;
+
 
 import javax.persistence.EntityManagerFactory;
 import javax.sql.DataSource;
 import java.util.Properties;
 
+import static org.modelmapper.config.Configuration.AccessLevel.PRIVATE;
+
+
 @Configuration
-@EnableAsync
 @EnableTransactionManagement
 @ComponentScan(basePackages = {"com.netcracker"})
 @EnableJpaRepositories(basePackages = {"com.netcracker.services.repo"})
@@ -88,6 +97,17 @@ public class HibernateConfig {
         properties.setProperty("hibernate.temp.use_jdbc_metadata_defaults", "false");
 
         return properties;
+    }
+
+    @Bean
+    public ModelMapper modelMapper() {
+        ModelMapper mapper = new ModelMapper();
+        mapper.getConfiguration()
+                .setMatchingStrategy(MatchingStrategies.STRICT)
+                .setFieldMatchingEnabled(true)
+                .setSkipNullEnabled(true)
+                .setFieldAccessLevel(PRIVATE);
+        return mapper;
     }
 
 }

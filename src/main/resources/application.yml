@@ -1,6 +1,6 @@
 server:
   address: 0.0.0.0
-  port: 8080
+  port: 8081
 
 hibernate:
   hbm2ddl:
@@ -13,3 +13,37 @@ hibernate:
 
 schema:
   node1
+mynodename:
+  node1
+
+broker:
+  address: localhost
+  port: 5673
+  vhost: rabbit1
+  username: rabbit1
+  password: rabbit1
+
+#server:
+#  address: 0.0.0.0
+#  port: 8082
+#
+#hibernate:
+#  hbm2ddl:
+#    auto: create
+#  search:
+#    default:
+#      directory_provider: filesystem
+#      indexBase: /var/lucene/indexes
+#
+#
+#schema:
+#  node2
+#mynodename:
+#  node2
+#
+#broker:
+#  address: localhost
+#  port: 5674
+#  vhost: rabbit2
+#  username: rabbit2
+#  password: rabbit2

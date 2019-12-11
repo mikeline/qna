@@ -40,6 +40,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 //                .anyRequest().permitAll();// for testing only: delete me
                 .antMatchers("/user/login").permitAll()//
                 .antMatchers("/user/signup").permitAll()//
+                .antMatchers("/question").permitAll()
+                .antMatchers("/questions").permitAll()
+                .antMatchers("/search").permitAll()
                 .antMatchers("/h2-console/**/**").permitAll()
                 // Disallow everything else..
                 .anyRequest().authenticated();

@@ -28,18 +28,18 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 
-//    @Bean
-//    public Docket swaggerSettings() {
-//        return new Docket(DocumentationType.SWAGGER_2)
-//                .select()//
-//                .apis(RequestHandlerSelectors.any())//
-//                .paths(Predicates.not(PathSelectors.regex("/error")))//
-//                .build()//
-//                .useDefaultResponseMessages(false)//
-//                .securitySchemes(new ArrayList<>(Arrays.asList(new ApiKey("Bearer %token", "Authorization", "Header"))))//
-//                .tags(new Tag("users", "Operations about users"))//
-//                .tags(new Tag("ping", "Just a ping"))//
-//                .genericModelSubstitutes(Optional.class);
-//    }
+    @Bean
+    public Docket swaggerSettings() {
+        return new Docket(DocumentationType.SWAGGER_2)
+                .select()//
+                .apis(RequestHandlerSelectors.any())//
+                .paths(Predicates.not(PathSelectors.regex("/error")))//
+                .build()//
+                .useDefaultResponseMessages(false)//
+                .securitySchemes(new ArrayList<>(Arrays.asList(new ApiKey("Bearer %token", "Authorization", "Header"))))//
+                .tags(new Tag("users", "Operations about users"))//
+                .tags(new Tag("ping", "Just a ping"))//
+                .genericModelSubstitutes(Optional.class);
+    }
 
 }

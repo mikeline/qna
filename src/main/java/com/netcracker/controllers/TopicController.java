@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.web.bind.annotation.RequestMethod.*;
@@ -30,7 +31,6 @@ public class TopicController {
 
     private final TopicService topicService;
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODER') or hasRole('ROLE_CLIENT')")
     @RequestMapping(value = "/{id}", method = GET)
     @ResponseBody
     public ResponseEntity<Topic> get(@PathVariable("id") String id) {
@@ -40,7 +40,6 @@ public class TopicController {
         return res == null ? new ResponseEntity<>(NOT_FOUND) : new ResponseEntity<>(res, OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODER') or hasRole('ROLE_CLIENT')")
     @RequestMapping(value = "/", method = GET)
     @ResponseBody
     public ResponseEntity<Collection<Topic>> getAll() {
@@ -48,7 +47,6 @@ public class TopicController {
         return new ResponseEntity<>(topicService.findAllTopics(), OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODER') or hasRole('ROLE_CLIENT')")
     @RequestMapping(method = POST)
     @ResponseBody
     public ResponseEntity<Topic> create(@RequestBody Topic topic) {
@@ -58,7 +56,6 @@ public class TopicController {
         return new ResponseEntity<>(res, CREATED);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODER')")
     @RequestMapping(value = "/{id}", method = DELETE)
     @ResponseBody
     public ResponseEntity delete(@PathVariable("id") String id) {
@@ -68,7 +65,6 @@ public class TopicController {
         return new ResponseEntity(NO_CONTENT);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODER')")
     @RequestMapping(method = PUT)
     @ResponseBody
     public ResponseEntity<Topic> update(@RequestBody Topic topic) {
@@ -78,20 +74,21 @@ public class TopicController {
         return new ResponseEntity<>(res, OK);
     }
 
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODER') or hasRole('ROLE_CLIENT')")
-    @RequestMapping(value = "/search/{text}", method = GET)
-    @ResponseBody
-    public ResponseEntity<List<Topic>> search(@PathVariable("text") String text) {
+//    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODER') or hasRole('ROLE_CLIENT')")
+//    @RequestMapping(value = "/search/{text}", method = GET)
+//    @ResponseBody
+//    public ResponseEntity<List<Topic>> search(@PathVariable("text") String text) {
+//
+//        List<Topic> res = topicService.searchTopics(text);
+//
+//        return new ResponseEntity<>(res, OK);
+//    }
 
-        List<Topic> res = topicService.searchTopics(text);
-
-        return new ResponseEntity<>(res, OK);
-    }
-
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODER') or hasRole('ROLE_CLIENT')")
-    @RequestMapping(value = "/searchTag", method = GET)
-    @ResponseBody
-    public ResponseEntity<List<Topic>> searchTag(@RequestBody Set<Tag> tags) {
-        return new ResponseEntity<>(topicService.searchTags(tags), OK);
-    }
+//    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_MODER') or hasRole('ROLE_CLIENT')")
+//    @RequestMapping(value = "/searchTag", method = GET)
+//    @ResponseBody
+//    public ResponseEntity<List<Topic>> searchTag(@RequestBody Set<Tag> tags) {
+//        tags.stream().map(Tag::getName).collect(Collectors.toList());
+//        return new ResponseEntity<>(topicService.searchTags(tags.toArray()), OK);
+//    }
 }

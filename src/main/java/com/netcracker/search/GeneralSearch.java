@@ -1,5 +1,6 @@
 package com.netcracker.search;
 
+import com.netcracker.models.Post;
 import com.netcracker.models.Topic;
 import lombok.RequiredArgsConstructor;
 import org.apache.lucene.search.Query;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -18,27 +20,37 @@ import java.util.stream.Collectors;
 @Transactional
 @SuppressWarnings("unchecked")
 @RequiredArgsConstructor
-public class TopicSearch {
+public class GeneralSearch {
 
     @PersistenceContext
     private final EntityManager entityManager;
 
-    public List<Topic> searchTopics(String text) {
+    public List<Object> search(String text) {
+
+        List<Object> foundPosts = new ArrayList<>();
+        foundPosts.addAll(searchEntities(text, "title", Topic.class));
+        foundPosts.addAll(searchEntities(text, "body", Post.class));
+
+        return foundPosts;
+    }
+
+    public List<Object> searchEntities(String text, String field, Class className) {
+
         FullTextEntityManager fullTextEntityManager = org.hibernate.search.jpa.Search.getFullTextEntityManager(entityManager);
 
         QueryBuilder queryBuilder = fullTextEntityManager.getSearchFactory()
-                                    .buildQueryBuilder().forEntity(Topic.class).get();
+                .buildQueryBuilder().forEntity(className).get();
 
         Query query = queryBuilder
-                      .keyword()
-                      .onFields("title")
-                      .matching(text)
-                      .createQuery();
+                .keyword()
+                .onFields(field)
+                .matching(text)
+                .createQuery();
 
-        FullTextQuery jpaQuery = fullTextEntityManager.createFullTextQuery(query, Topic.class);
+        FullTextQuery jpaQuery = fullTextEntityManager.createFullTextQuery(query);
 
-        return (List<Topic>) jpaQuery.getResultList().stream()
-                .map(result -> (Topic)result)
+        return (List<Object>) jpaQuery.getResultList().stream()
+                .map(result -> (Object)result)
                 .collect(Collectors.toList());
     }
 

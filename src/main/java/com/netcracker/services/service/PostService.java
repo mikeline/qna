@@ -1,7 +1,9 @@
 package com.netcracker.services.service;
 
 import com.netcracker.models.*;
-import com.netcracker.search.TopicSearch;
+import com.netcracker.models.Post;
+import com.netcracker.models.User;
+import com.netcracker.search.GeneralSearch;
 import com.netcracker.services.repo.PostRepo;
 import com.netcracker.services.repo.UserPostVoteRepo;
 import com.netcracker.services.repo.UserRepo;
@@ -33,7 +35,7 @@ public class PostService {
     private final UserPostVoteRepo userPostVoteRepo;
     private final UserRepo userRepo;
 
-    private final TopicSearch topicSearch;
+    private final GeneralSearch generalSearch;
 
     public List<Post> getAllPosts() {
         return postRepo.findAll();

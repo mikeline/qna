@@ -39,6 +39,9 @@ public class Node implements Replicable {
     @OneToMany(fetch = FetchType.EAGER, mappedBy = "originalNodeForUser",  cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<User> childUsers = new ArrayList<>();
 
+    @Column(name = "owner_id")
+    private UUID ownerId;
+
 //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "originalNodeForPost", cascade = CascadeType.PERSIST, orphanRemoval = true)
 //    private List<Post> childPosts = new ArrayList<>();
 
@@ -65,5 +68,5 @@ public class Node implements Replicable {
 
     @JsonIgnore
     private LocalDateTime lastSeen;
-    private UUID ownerId;
+
 }

@@ -2,7 +2,6 @@ package com.netcracker.models;
 
 import com.fasterxml.jackson.annotation.*;
 import com.netcracker.interserver.messages.Replicable;
-import com.netcracker.utils.EntityIdResolver;
 import com.netcracker.utils.ReplicatedEntityListener;
 import lombok.*;
 import org.hibernate.annotations.GenericGenerator;

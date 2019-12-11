@@ -14,6 +14,8 @@ import javax.persistence.PostPersist;
 import javax.persistence.PostRemove;
 import javax.persistence.PostUpdate;
 
+import java.util.Objects;
+
 import static com.netcracker.interserver.messages.ReplicationOperation.DELETE;
 import static com.netcracker.interserver.messages.ReplicationOperation.UPDATE;
 
@@ -39,7 +41,7 @@ public class ReplicatedEntityListener {
     public void postPersistOrUpdate(Replicable replicable) {
         log.info("got event persist or update");
         log.info(replicable);
-        if (nodeService.getSelfUUID().equals(replicable.getOwnerId())) {
+        if (nodeService != null && Objects.equals(nodeService.getSelfUUID(), replicable.getOwnerId())) {
             communication.replicate(replicable, UPDATE);
         }
     }
