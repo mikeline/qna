@@ -14,7 +14,7 @@ import java.util.*;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @NoArgsConstructor
-@ToString
+@ToString(exclude = {"tags"})
 @Data
 @Entity
 @EntityListeners(ReplicatedEntityListener.class)
@@ -45,7 +45,8 @@ public class Topic implements Serializable, Replicable {
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Answer> answers = new ArrayList<>();
 
-    @ManyToMany(cascade = CascadeType.PERSIST)
+    @JsonIgnore
+    @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "topic_tags")
     private Set<Tag> tags = new HashSet<>();
 

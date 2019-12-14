@@ -1,8 +1,11 @@
 package com.netcracker.services.service;
 
+import com.netcracker.models.Post;
 import com.netcracker.models.Tag;
 import com.netcracker.models.Topic;
+import com.netcracker.models.User;
 import com.netcracker.search.GeneralSearch;
+import com.netcracker.services.repo.PostRepo;
 import com.netcracker.services.repo.TopicRepo;
 import lombok.RequiredArgsConstructor;
 import javax.persistence.Query;
@@ -11,9 +14,7 @@ import org.springframework.stereotype.Service;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -22,6 +23,8 @@ public class TopicService {
     private final EntityManager entityManager;
 
     private final TopicRepo topicRepo;
+
+    private final PostRepo postRepo;
 
     private final PostService postService;
 
@@ -35,8 +38,8 @@ public class TopicService {
         return topicRepo.findAll();
     }
 
-    public Topic createTopic(Topic topic) {
-//        topic.setTopicPost(postService.getPostById(UUID.fromString(topic.getPostIdString())));
+    public Topic createTopic(Topic topic, User user) {
+        topic.getTopicPost().setUser(user);
         return topicRepo.save(topic);
     }
 
@@ -56,7 +59,7 @@ public class TopicService {
 
     }
 
-//    public List<Topic> searchTags(String[] tags) {
-//        return topicRepo.searchTag(tags);
-//    }
+    public List<Topic> searchTags(String[] tags) {
+        return topicRepo.searchTag(new HashSet<String>(Arrays.asList(tags)));
+    }
 }

@@ -17,7 +17,7 @@ import java.util.*;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @NoArgsConstructor
-//@ToString(exclude = {"ratedUsers"})
+@ToString(exclude = {"ratedUsers", "user"})
 @Data
 @Entity
 @Table(name = "post")
@@ -50,7 +50,7 @@ public class Post implements Replicable {
     @Column(name = "date_updated")
     private LocalDateTime dateUpdated;
 
-    @JsonIgnore
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
@@ -58,8 +58,8 @@ public class Post implements Replicable {
     @OneToMany(mappedBy = "commentedPost", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "posts")
-    private Set<Node> nodes = new HashSet<>();
+//    @ManyToMany(mappedBy = "posts")
+//    private Set<Node> nodes = new HashSet<>();
 
 
     @OneToMany(
@@ -70,14 +70,5 @@ public class Post implements Replicable {
     private Set<UserPostVote> ratedUsers = new HashSet<>();
 
     private UUID ownerId;
-
-    public Post(String body, PostType postType, User user) {
-        this.body = body;
-        this.rating = 0;
-        this.dateCreated = LocalDateTime.now();
-        this.dateUpdated = LocalDateTime.now();
-        this.user = user;
-        this.postType = postType;
-    }
 
 }

@@ -45,21 +45,21 @@ public class Node implements Replicable {
 //    @OneToMany(fetch = FetchType.LAZY, mappedBy = "originalNodeForPost", cascade = CascadeType.PERSIST, orphanRemoval = true)
 //    private List<Post> childPosts = new ArrayList<>();
 
-    @ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "node_user_replication",
-            joinColumns = { @JoinColumn(name = "node_id") },
-            inverseJoinColumns = { @JoinColumn(name = "replicated_user_id") }
-    )
-    Set<User> users = new HashSet<>();
-
-    @ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "node_post_replication",
-            joinColumns = { @JoinColumn(name = "node_id") },
-            inverseJoinColumns = { @JoinColumn(name = "replicated_post_id") }
-    )
-    Set<Post> posts = new HashSet<>();
+//    @ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+//    @JoinTable(
+//            name = "node_user_replication",
+//            joinColumns = { @JoinColumn(name = "node_id") },
+//            inverseJoinColumns = { @JoinColumn(name = "replicated_user_id") }
+//    )
+//    Set<User> users = new HashSet<>();
+//
+//    @ManyToMany(cascade = { CascadeType.ALL }, fetch = FetchType.EAGER)
+//    @JoinTable(
+//            name = "node_post_replication",
+//            joinColumns = { @JoinColumn(name = "node_id") },
+//            inverseJoinColumns = { @JoinColumn(name = "replicated_post_id") }
+//    )
+//    Set<Post> posts = new HashSet<>();
 
     @JsonIgnore
     @Enumerated(EnumType.STRING)
