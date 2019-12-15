@@ -1,7 +1,9 @@
 package com.netcracker.controllers;
 
 import com.netcracker.models.Answer;
+import com.netcracker.models.User;
 import com.netcracker.services.repo.AnswerRepo;
+import com.netcracker.services.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -9,6 +11,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -23,6 +26,8 @@ import static org.springframework.web.bind.annotation.RequestMethod.PUT;
 public class AnswerController {
 
     private final AnswerRepo answerRepo;
+
+    private final UserService userService;
 
     @RequestMapping(value = "/{id}", method = GET)
     @ResponseBody
@@ -65,4 +70,26 @@ public class AnswerController {
 
         return new ResponseEntity<>(res, OK);
     }
+
+    @RequestMapping(value = "/correct/{id}", method = PUT)
+    @ResponseBody
+    public ResponseEntity makeCorrect(@PathVariable UUID id, HttpServletRequest req) {
+
+        User user = userService.whoAmI(req);
+
+        Answer answer = answerRepo.getOne(id);
+        if(answer.getTopic().getTopicPost().getUser().getId() == user.getId())
+        {
+            answer.setCorrect(true);
+            answerRepo.save(answer);
+        }
+        else
+        {
+            return new ResponseEntity(FORBIDDEN);
+        }
+
+        return new ResponseEntity(NO_CONTENT);
+    }
+
+
 }

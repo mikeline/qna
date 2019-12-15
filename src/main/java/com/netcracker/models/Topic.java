@@ -37,15 +37,13 @@ public class Topic implements Serializable, Replicable {
     @IndexedEmbedded
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "post_id")
-    @Getter
-    @Setter
     private Post topicPost;
 
+    @JsonIgnore
     @IndexedEmbedded
     @OneToMany(mappedBy = "topic", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Answer> answers = new ArrayList<>();
 
-    @JsonIgnore
     @ManyToMany(cascade = CascadeType.ALL)
     @JoinTable(name = "topic_tags")
     private Set<Tag> tags = new HashSet<>();

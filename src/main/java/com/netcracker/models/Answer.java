@@ -27,15 +27,17 @@ public class Answer implements Replicable {
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
 
-    @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY)
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "topic_id")
     private Topic topic;
 
-    @JsonProperty("post_id")
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post answerPost;
+
+    @Column(name = "correct", columnDefinition = "boolean default FALSE")
+    private boolean correct;
 
     private UUID ownerId;
 
