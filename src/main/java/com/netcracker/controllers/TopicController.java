@@ -3,9 +3,11 @@ package com.netcracker.controllers;
 
 import com.netcracker.models.Tag;
 import com.netcracker.models.Topic;
+import com.netcracker.models.User;
 import com.netcracker.services.repo.TopicRepo;
 import com.netcracker.services.service.NodeService;
 import com.netcracker.services.service.TopicService;
+import com.netcracker.services.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -33,6 +36,8 @@ public class TopicController {
     private final TopicService topicService;
     private final NodeService nodeService;
 
+    private final UserService userService;
+
     @RequestMapping(value = "/{id}", method = GET)
     @ResponseBody
     public ResponseEntity<Topic> get(@PathVariable("id") String id) {
@@ -51,9 +56,13 @@ public class TopicController {
 
     @RequestMapping(method = POST)
     @ResponseBody
-    public ResponseEntity<Topic> create(@RequestBody Topic topic) {
+    public ResponseEntity<Topic> create(@RequestBody Topic topic, HttpServletRequest req) {
+
+        User user = userService.whoAmI(req);
+
+        log.info(user.getUsername());
         topic.getTopicPost().setOwnerId(nodeService.getSelfUUID());
-        Topic res = topicService.createTopic(topic);
+        Topic res = topicService.createTopic(topic, user);
 
         return new ResponseEntity<>(res, CREATED);
     }

@@ -43,6 +43,8 @@ public class GeneralSearch {
 
         Query query = queryBuilder
                 .keyword()
+                .fuzzy()
+                    .withPrefixLength(1)
                 .onFields(field)
                 .matching(text)
                 .createQuery();

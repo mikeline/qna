@@ -16,7 +16,7 @@ import java.util.*;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @NoArgsConstructor
-//@ToString(exclude = "ratedPosts")
+@ToString(exclude = {"ratedPosts", "owningPosts"})
 @Data
 @Entity
 @EntityListeners(ReplicatedEntityListener.class)
@@ -53,8 +53,6 @@ public class User implements Replicable {
     @Column(name = "unblock_time")
     private LocalDateTime unblockTime;
 
-    private boolean original;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "owning_node_id")
     private Node originalNodeForUser;
@@ -62,7 +60,7 @@ public class User implements Replicable {
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> owningPosts = new ArrayList<>();
-//
+
 //    @ManyToMany(mappedBy = "users")
 //    private Set<Node> nodes = new HashSet<>();
 

@@ -48,11 +48,11 @@ public class ScreenController {
 
     @GetMapping(value = "questions", params = "tags")
     @ResponseBody
-    public ResponseEntity<Object> getPostsByTags(@RequestParam String[] tags) {
+    public ResponseEntity<List<Topic>> getPostsByTags(@RequestParam String[] tags) {
 
-//        topicService.searchTags(tags);
+        List<Topic> topics = topicService.searchTags(tags);
 
-        return new ResponseEntity<>(null, OK);
+        return new ResponseEntity<>(topics, OK);
     }
 
 

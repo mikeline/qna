@@ -17,7 +17,7 @@ import java.util.*;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 @NoArgsConstructor
-//@ToString(exclude = {"ratedUsers"})
+@ToString(exclude = {"ratedUsers", "user"})
 @Data
 @Entity
 @Table(name = "post")
@@ -50,7 +50,7 @@ public class Post implements Replicable {
     @Column(name = "date_updated")
     private LocalDateTime dateUpdated;
 
-    @JsonIgnore
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;

@@ -11,7 +11,7 @@ import java.util.Set;
 import java.util.UUID;
 
 public interface TopicRepo extends JpaRepository<Topic, UUID> {
-//
-//    @Query("select topic from Topic topic left join topic.tags tags where tags.id in :tags")
-//    List<Topic> searchTag(Set<String> tags);
+
+    @Query("select topic from Topic topic left join topic.tags tags where tags.id in :tags")
+    List<Topic> searchTag(Set<String> tags);
 }

@@ -1,6 +1,6 @@
 server:
   address: 0.0.0.0
-  port: 8081
+  port: 8080
 
 hibernate:
   hbm2ddl:
@@ -12,16 +12,16 @@ hibernate:
 
 
 schema:
-  node1
+  qna
 mynodename:
   node1
 
 broker:
   address: localhost
-  port: 5673
-  vhost: rabbit1
-  username: rabbit1
-  password: rabbit1
+  port: 5672
+  vhost: /
+  username: guest
+  password: guest
 
 #server:
 #  address: 0.0.0.0
