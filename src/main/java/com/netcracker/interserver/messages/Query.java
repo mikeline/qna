@@ -4,10 +4,14 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.UUID;
+
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class Query {
     private String query;
-    private String senderKey;
+    private UUID sendTo;
+    private UUID filterId;
+    private UUID id;
 }

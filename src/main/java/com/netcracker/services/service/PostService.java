@@ -30,6 +30,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 public class PostService {
 
     private final UserService userService;
+    private final NodeService nodeService;
 
     private final PostRepo postRepo;
     private final UserPostVoteRepo userPostVoteRepo;
@@ -53,6 +54,10 @@ public class PostService {
 
         post.setUser(creator);
 
+        if (post.getOwnerId() == null) {
+            post.setOwnerId(nodeService.getSelfUUID());
+        }
+
         return postRepo.save(post);
     }
 
@@ -60,6 +65,10 @@ public class PostService {
     public Post updatePost(Post post, HttpServletRequest req) {
 
         Collection<? extends GrantedAuthority> userRoles = userService.getAuthoritiesFromToken(req);
+
+        if (post.getOwnerId() == null) {
+            post.setOwnerId(nodeService.getSelfUUID());
+        }
 
         if(userRoles.contains(QnaRole.ROLE_MODER) || userRoles.contains(QnaRole.ROLE_ADMIN)) {
             Post res = postRepo.save(post);
@@ -103,7 +112,6 @@ public class PostService {
         Optional<User> opUser = userRepo.findById(userId);
 
         if (opPost.isEmpty() || opUser.isEmpty()) {
-            log.info("quitting");
             return;
         }
 

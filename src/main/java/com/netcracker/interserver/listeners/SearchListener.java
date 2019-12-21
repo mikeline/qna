@@ -1,8 +1,13 @@
 package com.netcracker.interserver.listeners;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netcracker.interserver.messages.Query;
-import com.netcracker.interserver.messages.SearchResult;
+import com.netcracker.interserver.messages.Replicable;
+import com.netcracker.interserver.messages.SearchRequest;
+import com.netcracker.models.SearchResult;
 import com.netcracker.search.GeneralSearch;
+import com.netcracker.services.repo.SearchResultRepo;
 import com.netcracker.services.service.NodeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j;
@@ -11,9 +16,13 @@ import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.messaging.handler.annotation.Payload;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
+import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static com.netcracker.interserver.RabbitConfiguration.*;
 
@@ -22,30 +31,55 @@ import static com.netcracker.interserver.RabbitConfiguration.*;
 @RequiredArgsConstructor
 @RabbitListener(queues = {QUEUE_SEARCH, QUEUE_SEARCH_RESULT, QUEUE_SEARCH_QUERY})
 public class SearchListener {
-//    public static final String ID = "SearchListener";
-
-    private final GeneralSearch generalSearch;
-    private final RabbitTemplate template;
     private final NodeService nodeService;
-
+    private final RabbitTemplate template;
+    private final GeneralSearch generalSearch;
+    private final ObjectMapper mapper;
+    private final SearchResultRepo searchResultRepo;
 
     @RabbitHandler
-    public void handleSearchQuery(@Payload String query, Message msg) {
+    public void handleSearchQuery(@Payload SearchRequest searchRequest, Message msg) {
         log.debug(msg);
-        template.convertAndSend(EXCHANGE_SEARCH, "query", new Query(query, nodeService.getSelfUUID().toString()));
+        Query query = new Query();
+        query.setQuery(searchRequest.getQuery());
+        query.setSendTo(searchRequest.getSendTo());
+        query.setId(searchRequest.getId());
+        query.setFilterId(nodeService.getSelfUUID());
+        template.convertAndSend(QUEUE_SEARCH, query);
     }
 
     @RabbitHandler
-    public void handleSearch(@Payload Query query, Message msg) {
+    @Transactional
+    public void handleSearch(@Payload Query query, Message msg) throws Exception {
         log.debug(msg);
-        List<Object> result = generalSearch.search(query.getQuery());
-        template.convertAndSend(EXCHANGE_SEARCH, query.getSenderKey(), new SearchResult(result));
+
+        String result = generalSearch.search(query.getQuery())
+                .stream()
+                .filter(obj -> obj instanceof Replicable)
+                .map(obj -> (Replicable) obj)
+                .filter(rep -> query.getFilterId().equals(rep.getOwnerId())) // todo: move this filter into the search
+                .map(rep -> {
+                    String res = "";
+                    try {
+                        res = mapper.writeValueAsString(rep);
+                    } catch (JsonProcessingException e) {
+                        e.printStackTrace();
+                    }
+                    return res;
+                })
+                .collect(Collectors.joining(" "));
+
+        template.convertAndSend(EXCHANGE_SEARCH, query.getSendTo().toString(), new SearchResult(query.getId(), result));
     }
 
     @RabbitHandler
-    public void handleSearchResult(@Payload SearchResult result, Message msg) {
+    public void handleSearchResult(@Payload SearchResult searchResult, Message msg) {
         log.debug(msg);
-        log.info(result); //todo : something meaningful
+        SearchResult persistedResult = searchResultRepo.findById(searchResult.getId()).orElse(new SearchResult(searchResult.getId(), ""));
+
+
+        persistedResult.setResult(persistedResult.getResult() + ' ' + searchResult.getResult());
+        searchResultRepo.save(persistedResult);
     }
 
 }

@@ -4,11 +4,13 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.List;
+import java.util.UUID;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class SearchResult {
-    private List<Object> result;
+public class SearchRequest {
+    private String query;
+    private UUID sendTo;
+    private UUID id;
 }

@@ -29,6 +29,7 @@ import static org.springframework.http.HttpStatus.NO_CONTENT;
 public class UserService {
 
     private final UserRepo userRepo;
+    private final NodeService nodeService;
 
     private final PasswordEncoder passwordEncoder;
 
@@ -51,10 +52,18 @@ public class UserService {
     }
 
     public User createUser(User user) {
+        if (user.getOwnerId() == null) {
+            user.setOwnerId(nodeService.getSelfUUID());
+        }
+
         return userRepo.save(user);
     }
 
     public User updateUser(User user) {
+        if (user.getOwnerId() == null) {
+            user.setOwnerId(nodeService.getSelfUUID());
+        }
+
         return userRepo.save(user);
     }
 
@@ -82,6 +91,9 @@ public class UserService {
     public String signup(User user) {
         if (!userRepo.existsByUsername(user.getUsername())) {
             user.setPasswordEncrypted(passwordEncoder.encode(user.getPasswordEncrypted()));
+            if (user.getOwnerId() == null) {
+                user.setOwnerId(nodeService.getSelfUUID());
+            }
             userRepo.save(user);
             List<QnaRole> roles = new ArrayList<>();
             roles.add(user.getRole());

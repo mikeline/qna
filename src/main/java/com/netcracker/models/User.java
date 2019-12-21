@@ -62,9 +62,9 @@ public class User implements Replicable {
     @JsonIgnore
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> owningPosts = new ArrayList<>();
-
-    @ManyToMany(mappedBy = "users")
-    private Set<Node> nodes = new HashSet<>();
+//
+//    @ManyToMany(mappedBy = "users")
+//    private Set<Node> nodes = new HashSet<>();
 
     @JsonIgnore
     @OneToMany(

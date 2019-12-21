@@ -40,12 +40,12 @@ public class RabbitConfiguration {
 
     public static final String EXCHANGE_USER_AUTHENTICATION = "user auth"; //todo: make authentication
 //    public static final String EXCHANGE_SEND_REPLICATION = "EXCHANGE_SEND_REPLICATION"; // upstream for EXCHANGE_REPLICATION
-    public static final String EXCHANGE_REPLICATION = "EXCHANGE_REPLICATION"; // federated; connects to EXCHANGE_REPLICATION
-    public static final String EXCHANGE_SEARCH = "EXCHANGE_SEARCH";
+    public static final String EXCHANGE_REPLICATION = "EXCHANGE_REPLICATION"; // federated
+    public static final String EXCHANGE_SEARCH = "EXCHANGE_SEARCH"; // federated
 
 
     public static final String QUEUE_RECEIVE_REPLICATION = "QUEUE_RECEIVE_REPLICATION";
-    public static final String QUEUE_SEARCH = "QUEUE_SEARCH"; // federated
+    public static final String QUEUE_SEARCH = "QUEUE_SEARCH"; // federated queue, contains Query messages with a string query and information
     public static final String QUEUE_SEARCH_QUERY = "QUEUE_SEARCH_QUERY";
     public static final String QUEUE_SEARCH_RESULT = "QUEUE_SEARCH_RESULT";
 

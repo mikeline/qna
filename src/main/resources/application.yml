@@ -8,7 +8,7 @@ hibernate:
   search:
     default:
       directory_provider: filesystem
-      indexBase: /var/lucene/indexes
+      indexBase: /var/lucene/indexes/base1
 
 
 schema:
@@ -33,7 +33,7 @@ broker:
 #  search:
 #    default:
 #      directory_provider: filesystem
-#      indexBase: /var/lucene/indexes
+#      indexBase: /var/lucene/indexes/base2
 #
 #
 #schema:

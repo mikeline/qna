@@ -1,5 +1,6 @@
 package com.netcracker.models;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.netcracker.interserver.messages.Replicable;
 import com.netcracker.utils.ReplicatedEntityListener;
@@ -35,6 +36,10 @@ public class Comment implements Replicable {
     @JoinColumn(name = "commented_post_id")
     private Post commentedPost;
 
-    private UUID ownerId;
+    @Override
+    @JsonIgnore
+    public UUID getOwnerId() {
+        return commentedPost.getOwnerId();
+    }
 
 }

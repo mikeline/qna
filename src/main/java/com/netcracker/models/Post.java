@@ -58,9 +58,9 @@ public class Post implements Replicable {
     @OneToMany(mappedBy = "commentedPost", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Comment> comments = new ArrayList<>();
 
-    @ManyToMany(mappedBy = "posts")
-    private Set<Node> nodes = new HashSet<>();
-
+//    @ManyToMany(mappedBy = "posts")
+//    private Set<Node> nodes = new HashSet<>();
+//
 
     @OneToMany(
             mappedBy = "post",

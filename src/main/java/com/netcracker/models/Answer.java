@@ -37,6 +37,10 @@ public class Answer implements Replicable {
     @JoinColumn(name = "post_id")
     private Post answerPost;
 
-    private UUID ownerId;
+    @Override
+    @JsonIgnore
+    public UUID getOwnerId() {
+        return answerPost.getOwnerId();
+    }
 
 }

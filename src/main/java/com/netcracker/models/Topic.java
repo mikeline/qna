@@ -49,5 +49,9 @@ public class Topic implements Serializable, Replicable {
     @JoinTable(name = "topic_tags")
     private Set<Tag> tags = new HashSet<>();
 
-    private UUID ownerId;
+    @Override
+    @JsonIgnore
+    public UUID getOwnerId() {
+        return topicPost.getOwnerId();
+    }
 }
