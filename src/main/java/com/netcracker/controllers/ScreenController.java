@@ -55,4 +55,14 @@ public class ScreenController {
         return new ResponseEntity<>(topics, OK);
     }
 
+    @GetMapping(value = "questions/latest")
+    @ResponseBody
+    public ResponseEntity<QuestionListDto> getLatestQuestions() {
+
+        QuestionListDto latestQuestions = screenService.getLatestQuestions();
+
+        return new ResponseEntity<>(latestQuestions, OK);
+    }
+
+
 }

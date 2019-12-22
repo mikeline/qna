@@ -10,6 +10,7 @@ import org.hibernate.search.annotations.Index;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
@@ -20,7 +21,7 @@ import java.util.*;
 @EntityListeners(ReplicatedEntityListener.class)
 @Table(name = "topic")
 @Indexed
-public class Topic implements Serializable, Replicable {
+public class Topic implements Serializable, Comparable, Replicable {
 
     @Id
     @GeneratedValue(generator = "ifnull-uuid")
@@ -49,4 +50,24 @@ public class Topic implements Serializable, Replicable {
     private Set<Tag> tags = new HashSet<>();
 
     private UUID ownerId;
+
+    @Override
+    public int compareTo(Object o) {
+        Topic topic = (Topic)o;
+        LocalDateTime compareDateUpdated = topic.getTopicPost().getDateUpdated();
+
+        if(compareDateUpdated.isAfter(this.getTopicPost().getDateUpdated())) {
+            return -1;
+        }
+        else if(compareDateUpdated.isBefore(this.getTopicPost().getDateUpdated())) {
+            return 1;
+        }
+        else {
+            return 0;
+        }
+
+        /* For Descending order do like this */
+        //return compareage-this.studentage;
+    }
+
 }
