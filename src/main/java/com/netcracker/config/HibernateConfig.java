@@ -2,6 +2,7 @@ package com.netcracker.config;
 import com.netcracker.interserver.RabbitConfiguration;
 import com.netcracker.security.WebSecurityConfig;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.PropertyMap;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;

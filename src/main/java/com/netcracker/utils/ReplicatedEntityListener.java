@@ -39,8 +39,9 @@ public class ReplicatedEntityListener {
     @PostPersist
     @PostUpdate
     public void postPersistOrUpdate(Replicable replicable) {
-        log.info("got event persist or update");
-        log.info(replicable);
+        log.debug("got event persist or update");
+        log.debug(replicable);
+        // checking nodeService for null is needed because this method gets called before nodeService is initialized
         if (nodeService != null && Objects.equals(nodeService.getSelfUUID(), replicable.getOwnerId())) {
             communication.replicate(replicable, UPDATE);
         }
@@ -48,8 +49,8 @@ public class ReplicatedEntityListener {
     
     @PostRemove
     public void postRemove(Replicable replicable) {
-        log.info("got event remove");
-        log.info(replicable);
+        log.debug("got event remove");
+        log.debug(replicable);
         if (nodeService.getSelfUUID().equals(replicable.getOwnerId())) {
             communication.replicate(replicable, DELETE);
         }

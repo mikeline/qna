@@ -39,7 +39,6 @@ public class SearchController {
         searchResult.setId(resultId);
         searchResultRepo.save(searchResult);
         template.convertAndSend(EXCHANGE_SEARCH, "query", new SearchRequest(text, nodeService.getSelfUUID(), searchResult.getId()));
-//        Collection<Object> posts = generalSearch.search(text); // fixme: insert your function that will use GeneralSearch
         return new ResponseEntity<>(resultId, OK);
     }
 
