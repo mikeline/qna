@@ -5,13 +5,14 @@ import com.netcracker.models.Post;
 import com.netcracker.models.Topic;
 import com.netcracker.models.User;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.mapping.Collection;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Comment;
 
 import javax.transaction.Transactional;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -31,10 +32,13 @@ public class ScreenService {
     @Transactional
     public QuestionListDto getQuestions(int page) {
 
-        QuestionListDto questionListDto = new QuestionListDto();
-
         List<Topic> topics = topicService.getLimitedTopics(page, 20);
 
+        return convertTopicsToQuestionListDto(topics);
+    }
+
+    public QuestionListDto convertTopicsToQuestionListDto(List<Topic> topics) {
+        QuestionListDto questionListDto = new QuestionListDto();
         for (Topic t: topics) {
             User user = t.getTopicPost().getUser();
             UserDto userDto = modelMapper.map(user, UserDto.class);
@@ -46,8 +50,20 @@ public class ScreenService {
                     t.getAnswers().size());
             questionListDto.getQuestions().add(questionDto);
         }
-
         return questionListDto;
+    }
+
+
+    public QuestionListDto getLatestQuestions() {
+        // Get topics from all nodes
+        List<Topic> topics = new ArrayList<>(); //fixme: assign it to your function
+        List<Topic> latestTopics = new ArrayList<>();
+
+        // Get 100 latest topics
+        Collections.sort(topics);
+        latestTopics = topics.subList(0, 100);
+
+        return convertTopicsToQuestionListDto(latestTopics);
     }
 
     @Transactional
