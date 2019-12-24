@@ -4,6 +4,7 @@ import com.vladmihalcea.hibernate.type.json.JsonBinaryType;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.Type;
 import org.hibernate.annotations.TypeDef;
@@ -40,6 +41,10 @@ public class SearchResult {
     private String result;
 
     @Column(name = "last_updated")
-    private LocalDateTime lastUpdated;
+    private LocalDateTime postLastUpdated;
+
+    @Column(name = "date_created")
+    @CreationTimestamp
+    private LocalDateTime dateCreated;
 
 }

@@ -68,13 +68,13 @@ public class SearchListener {
                 })
                 .collect(Collectors.joining(" "));
 
-        template.convertAndSend(EXCHANGE_SEARCH, query.getSendTo().toString(), new SearchResult(null, query.getId(), result, LocalDateTime.now())); //fixme
+        template.convertAndSend(EXCHANGE_SEARCH, query.getSendTo().toString(), new SearchResult(null, query.getId(), result, LocalDateTime.now(), LocalDateTime.now())); //fixme
     }
 
     @RabbitHandler
     public void handleSearchResult(@Payload SearchResult searchResult, Message msg) {
         log.debug(msg);
-        SearchResult persistedResult = searchResultRepo.findById(searchResult.getId()).orElse(new SearchResult(null, searchResult.getId(), "", LocalDateTime.now()));
+        SearchResult persistedResult = searchResultRepo.findById(searchResult.getId()).orElse(new SearchResult(null, searchResult.getId(), "", LocalDateTime.now(), LocalDateTime.now()));
 
 
         persistedResult.setResult(persistedResult.getResult() + ' ' + searchResult.getResult());
