@@ -27,7 +27,7 @@ public class Topic implements Serializable, Comparable, Replicable {
     @GeneratedValue(generator = "ifnull-uuid")
     @GenericGenerator(
             name = "ifnull-uuid",
-            strategy = "com.netcacker.services.IfNullUUIDGenerator"
+            strategy = "com.netcracker.services.IfNullUUIDGenerator"
     )
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;

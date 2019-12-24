@@ -46,7 +46,7 @@ public class SearchController {
     @RequestMapping("/result/{id}")
     @ResponseBody
     public ResponseEntity<String> searchById(@PathVariable UUID id) {
-        String result = searchResultRepo.findById(id).orElse(new SearchResult(null, id, "", LocalDateTime.now())).getResult();
+        String result = searchResultRepo.findById(id).orElse(new SearchResult(null, id, "", LocalDateTime.now(), LocalDateTime.now())).getResult(); //fixme
         return new ResponseEntity<String>(result, OK);
     }
 

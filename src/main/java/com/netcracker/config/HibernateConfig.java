@@ -112,9 +112,4 @@ public class HibernateConfig {
         return mapper;
     }
 
-    @Bean
-    public ObjectMapper objectMapper() {
-        return new ObjectMapper();
-    }
-
 }
