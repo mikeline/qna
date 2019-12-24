@@ -1,4 +1,5 @@
 package com.netcracker.config;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netcracker.interserver.RabbitConfiguration;
 import com.netcracker.security.WebSecurityConfig;
 import org.modelmapper.ModelMapper;
@@ -109,6 +110,11 @@ public class HibernateConfig {
                 .setSkipNullEnabled(true)
                 .setFieldAccessLevel(PRIVATE);
         return mapper;
+    }
+
+    @Bean
+    public ObjectMapper objectMapper() {
+        return new ObjectMapper();
     }
 
 }

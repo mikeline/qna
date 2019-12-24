@@ -14,6 +14,7 @@ import javax.persistence.PersistenceContext;
 import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Repository
@@ -25,13 +26,21 @@ public class GeneralSearch {
     @PersistenceContext
     private final EntityManager entityManager;
 
-    public List<Object> search(String text) {
+    public List<Object> search(UUID ownerID, String text) {
 
         List<Object> foundPosts = new ArrayList<>();
         foundPosts.addAll(searchEntities(text, "title", Topic.class));
         foundPosts.addAll(searchEntities(text, "body", Post.class));
 
-        return foundPosts;
+        return foundPosts.stream()
+                  .filter(post -> {
+                    if(post instanceof Topic) {
+                        return ((Topic)post).getOwnerId().equals(ownerID.toString());
+                    }
+                    else {
+                        return ((Post)post).getOwnerId().equals(ownerID.toString());
+                    }
+                }).collect(Collectors.toList());
     }
 
     public List<Object> searchEntities(String text, String field, Class className) {

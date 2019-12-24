@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.scheduling.support.SimpleTriggerContext;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.UUID;
 
@@ -45,7 +46,7 @@ public class SearchController {
     @RequestMapping("/result/{id}")
     @ResponseBody
     public ResponseEntity<String> searchById(@PathVariable UUID id) {
-        String result = searchResultRepo.findById(id).orElse(new SearchResult(null, "")).getResult();
+        String result = searchResultRepo.findById(id).orElse(new SearchResult(null, id, "", LocalDateTime.now())).getResult();
         return new ResponseEntity<String>(result, OK);
     }
 

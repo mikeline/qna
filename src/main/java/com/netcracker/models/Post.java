@@ -69,6 +69,7 @@ public class Post implements Replicable {
     )
     private Set<UserPostVote> ratedUsers = new HashSet<>();
 
+    @Column(name = "owner_id")
     private UUID ownerId;
 
     public Post(String body, PostType postType, User user) {

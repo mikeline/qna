@@ -3,7 +3,6 @@ package com.netcracker.controllers;
 import com.netcracker.dto.QuestionListDto;
 import com.netcracker.dto.TreadDto;
 import com.netcracker.models.Topic;
-import com.netcracker.services.service.PostService;
 import com.netcracker.services.service.ScreenService;
 import com.netcracker.services.service.TopicService;
 import com.sun.xml.bind.v2.TODO;
@@ -57,11 +56,14 @@ public class ScreenController {
 
     @GetMapping(value = "questions/latest")
     @ResponseBody
-    public ResponseEntity<QuestionListDto> getLatestQuestions() {
+    public ResponseEntity<UUID> getLatestQuestionsId() {
+        return screenService.getLatestQuestionsId();
+    }
 
-        QuestionListDto latestQuestions = screenService.getLatestQuestions();
-
-        return new ResponseEntity<>(latestQuestions, OK);
+    @GetMapping(value = "questions/latest/{id}")
+    @ResponseBody
+    public ResponseEntity<QuestionListDto> getLatestQuestions(@PathVariable String id) {
+        return screenService.getLatestQuestions(UUID.fromString(id));
     }
 
 

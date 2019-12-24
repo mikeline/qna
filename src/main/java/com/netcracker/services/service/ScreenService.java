@@ -1,25 +1,39 @@
 package com.netcracker.services.service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netcracker.dto.*;
 import com.netcracker.models.Post;
+import com.netcracker.models.SearchResult;
 import com.netcracker.models.Topic;
 import com.netcracker.models.User;
+import com.netcracker.services.repo.SearchResultRepo;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.mapping.Collection;
 import org.modelmapper.ModelMapper;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.w3c.dom.Comment;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 import javax.transaction.Transactional;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+import static org.springframework.http.HttpStatus.OK;
+
 @Service
 @RequiredArgsConstructor
 public class ScreenService {
+
+    @PersistenceContext
+    private final EntityManager entityManager;
 
     private final UserService userService;
 
@@ -27,7 +41,11 @@ public class ScreenService {
 
     private final TopicService topicService;
 
+    private final SearchResultRepo searchResultRepo;
+
     private final ModelMapper modelMapper;
+
+    private final ObjectMapper objectMapper;
 
     @Transactional
     public QuestionListDto getQuestions(int page) {
@@ -54,16 +72,36 @@ public class ScreenService {
     }
 
 
-    public QuestionListDto getLatestQuestions() {
-        // Get topics from all nodes
-        List<Topic> topics = new ArrayList<>(); //fixme: assign it to your function
-        List<Topic> latestTopics = new ArrayList<>();
+    public ResponseEntity<UUID> getLatestQuestionsId() {
 
-        // Get 100 latest topics
-        Collections.sort(topics);
-        latestTopics = topics.subList(0, 100);
+        UUID resultId = UUID.randomUUID();
+        SearchResult searchResult = new SearchResult();
+        searchResult.setId(resultId);
+        searchResultRepo.save(searchResult);
 
-        return convertTopicsToQuestionListDto(latestTopics);
+        return new ResponseEntity<>(resultId, OK);
+    }
+
+    public ResponseEntity<QuestionListDto> getLatestQuestions(UUID searchId) {
+
+        Query query = entityManager.createQuery("select s.result from SearchResult s where s.searchId = :searchId order by s.lastUpdated desc",
+                SearchResult.class).setParameter("searchId", searchId);
+        query.setFirstResult(0).setMaxResults(100);
+
+        List<QuestionDto> questions = (List<QuestionDto>) query.getResultList().stream()
+                                                           .map(res -> {
+                                                               try {
+                                                                   return objectMapper.readValue(res.toString(), QuestionDto.class);
+                                                               } catch (JsonProcessingException e) {
+                                                                   e.printStackTrace();
+                                                                   return res;
+                                                               }
+                                                           })
+                                                           .collect(Collectors.toList());
+
+        QuestionListDto questionListDto = new QuestionListDto(questions);
+
+        return new ResponseEntity<>(questionListDto, OK);
     }
 
     @Transactional

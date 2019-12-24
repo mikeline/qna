@@ -27,7 +27,7 @@ public class Topic implements Serializable, Comparable, Replicable {
     @GeneratedValue(generator = "ifnull-uuid")
     @GenericGenerator(
             name = "ifnull-uuid",
-            strategy = "com.netcracker.services.IfNullUUIDGenerator"
+            strategy = "com.netcacker.services.IfNullUUIDGenerator"
     )
     @Column(name = "id", updatable = false, nullable = false)
     private UUID id;
@@ -68,9 +68,6 @@ public class Topic implements Serializable, Comparable, Replicable {
         //return compareage-this.studentage;
     }
 
-    @Override
-    @JsonIgnore
-    public UUID getOwnerId() {
-        return topicPost.getOwnerId();
-    }
+    @Column(name = "owner_id")
+    private UUID ownerId;
 }

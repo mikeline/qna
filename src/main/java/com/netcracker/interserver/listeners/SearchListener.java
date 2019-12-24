@@ -16,12 +16,11 @@ import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Component;
 
 import javax.transaction.Transactional;
-import java.util.List;
-import java.util.Optional;
+import java.time.LocalDateTime;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import static com.netcracker.interserver.RabbitConfiguration.*;
@@ -53,7 +52,7 @@ public class SearchListener {
     public void handleSearch(@Payload Query query, Message msg) throws Exception {
         log.debug(msg);
 
-        String result = generalSearch.search(query.getQuery())
+        String result = generalSearch.search(UUID.fromString(query.getQuery()), "")
                 .stream()
                 .filter(obj -> obj instanceof Replicable)
                 .map(obj -> (Replicable) obj)
@@ -69,13 +68,13 @@ public class SearchListener {
                 })
                 .collect(Collectors.joining(" "));
 
-        template.convertAndSend(EXCHANGE_SEARCH, query.getSendTo().toString(), new SearchResult(query.getId(), result));
+        template.convertAndSend(EXCHANGE_SEARCH, query.getSendTo().toString(), new SearchResult(null, query.getId(), result, LocalDateTime.now())); //fixme
     }
 
     @RabbitHandler
     public void handleSearchResult(@Payload SearchResult searchResult, Message msg) {
         log.debug(msg);
-        SearchResult persistedResult = searchResultRepo.findById(searchResult.getId()).orElse(new SearchResult(searchResult.getId(), ""));
+        SearchResult persistedResult = searchResultRepo.findById(searchResult.getId()).orElse(new SearchResult(null, searchResult.getId(), "", LocalDateTime.now()));
 
 
         persistedResult.setResult(persistedResult.getResult() + ' ' + searchResult.getResult());
